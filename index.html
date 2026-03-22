@@ -65,6 +65,8 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .pc-link.en:hover{background:#ebf8ff}
 .pc-link.sk{color:#276749;border:1px solid #c6f6d5}
 .pc-link.sk:hover{background:#f0fff4}
+.pc-link.gsk{color:#744210;border:1px solid #fbd38d}
+.pc-link.gsk:hover{background:#fffbeb}
 .c-it{background:#5cb87a}.r-it{background:#f0fff4}
 .c-mo{background:#4fc3f7}.r-mo{background:#e8f7fe}
 .c-ca{background:#64a9d9}.r-ca{background:#eaf3fb}
@@ -118,9 +120,9 @@ async function fetchPlace(p){
     var [s,c,lk]=await Promise.all([
       fetch(WSUM+encodeURIComponent(slug)).then(function(r){return r.json();}).catch(function(){return null;}),
       fetch(WCOM+encodeURIComponent(p.w)).then(function(r){return r.json();}).catch(function(){return null;}),
-      fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(slug)+'&prop=langlinks&lllang=sk&format=json&origin=*').then(function(r){return r.json();}).catch(function(){return null;})
+      fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(slug)+'&prop=langlinks&lllang=cs&format=json&origin=*').then(function(r){return r.json();}).catch(function(){return null;})
     ]);
-    var imgs=[],url=wUrl(p.w),skUrl='https://sk.wikipedia.org/w/index.php?search='+encodeURIComponent(p.n);
+    var imgs=[],url=wUrl(p.w),skUrl='https://cs.wikipedia.org/w/index.php?search='+encodeURIComponent(p.n);
     if(s&&s.type!=='https://mediawiki.org/wiki/HyperSwitch/errors/not_found'){
       if(s.thumbnail&&s.thumbnail.source)imgs.push(s.thumbnail.source);
       if(s.content_urls&&s.content_urls.desktop)url=s.content_urls.desktop.page;
@@ -135,11 +137,11 @@ async function fetchPlace(p){
     if(lk&&lk.query&&lk.query.pages){
       var lkp=Object.values(lk.query.pages);
       if(lkp.length&&lkp[0].langlinks&&lkp[0].langlinks.length){
-        skUrl='https://sk.wikipedia.org/wiki/'+encodeURIComponent(lkp[0].langlinks[0]['*'].replace(/ /g,'_'));
+        skUrl='https://cs.wikipedia.org/wiki/'+encodeURIComponent(lkp[0].langlinks[0]['*'].replace(/ /g,'_'));
       }
     }
     return {imgs:imgs.slice(0,3),url:url,skUrl:skUrl};
-  }catch(e){return {imgs:[],url:wUrl(p.w),skUrl:'https://sk.wikipedia.org/w/index.php?search='+encodeURIComponent(p.n)};}
+  }catch(e){return {imgs:[],url:wUrl(p.w),skUrl:'https://cs.wikipedia.org/w/index.php?search='+encodeURIComponent(p.n)};}
 }
 
 var days=[
@@ -501,7 +503,8 @@ function card(p,url,skUrl){
     '<div class="pc-desc">'+p.d+'</div>'+
     '<div class="pc-btns">'+
     '<a href="'+url+'" target="_blank" rel="noopener" class="pc-link en" onclick="event.stopPropagation()">Wikipedia</a>'+
-    '<a href="'+sk+'" target="_blank" rel="noopener" class="pc-link sk" id="sk-'+safeId(p.n)+'" onclick="event.stopPropagation()">SK info</a>'+
+    '<a href="'+sk+'" target="_blank" rel="noopener" class="pc-link sk" id="sk-'+safeId(p.n)+'" onclick="event.stopPropagation()">Wikipedia CZ</a>'+
+    '<a href="https://www.google.com/search?q='+encodeURIComponent(p.n+' (site:.sk OR site:.cz)')+'" target="_blank" rel="noopener" class="pc-link gsk" onclick="event.stopPropagation()">Google SK</a>'+
     '</div></div></div>';
 }
 function renderCards(i){
@@ -509,7 +512,7 @@ function renderCards(i){
   var city=d.places.filter(function(p){return p.t==='c';});
   var nat=d.places.filter(function(p){return p.t==='n';});
   var h='';
-  var skFb=function(n){return 'https://sk.wikipedia.org/w/index.php?search='+encodeURIComponent(n);};
+  var skFb=function(n){return 'https://cs.wikipedia.org/w/index.php?search='+encodeURIComponent(n);};
   if(city.length){h+='<div class="sec-h sec-city">🏛️ Mestská turistika</div><div class="pgrid">';city.forEach(function(p){h+=card(p,wUrl(p.w),skFb(p.n));});h+='</div>';}
   if(nat.length){h+='<div class="sec-h sec-nat">🌿 Príroda &amp; výhľady</div><div class="pgrid">';nat.forEach(function(p){h+=card(p,wUrl(p.w),skFb(p.n));});h+='</div>';}
   document.getElementById('cards'+i).innerHTML=h;

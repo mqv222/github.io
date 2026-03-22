@@ -67,6 +67,17 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .pc-link.sk:hover{background:#f0fff4}
 .pc-link.gsk{color:#744210;border:1px solid #fbd38d}
 .pc-link.gsk:hover{background:#fffbeb}
+.itin-box{background:#fffdf0;border-radius:12px;padding:14px 16px;margin-bottom:14px;border-left:4px solid #e2b44b}
+.itin-must-h,.itin-sched-h{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.itin-must-h{color:#744210}
+.itin-sched-h{color:#2c5282;margin-top:12px}
+.itin-must{display:flex;flex-direction:column;gap:5px}
+.itin-must-item{font-size:.81rem;color:#2d3748;padding:5px 8px;background:rgba(226,180,75,.15);border-radius:6px;line-height:1.4}
+.itin-must-item::before{content:'★  ';color:#d69e2e}
+.itin-sched{display:flex;flex-direction:column}
+.itin-row{display:grid;grid-template-columns:50px 1fr;gap:8px;font-size:.79rem;color:#4a5568;line-height:1.45;padding:4px 0;border-bottom:1px solid #f0f4f8}
+.itin-row:last-child{border-bottom:none}
+.itin-time{font-weight:700;color:#2b6cb0;font-variant-numeric:tabular-nums}
 .c-it{background:#5cb87a}.r-it{background:#f0fff4}
 .c-mo{background:#4fc3f7}.r-mo{background:#e8f7fe}
 .c-ca{background:#64a9d9}.r-ca{background:#eaf3fb}
@@ -451,6 +462,50 @@ var days=[
 ]}
 ];
 
+// ── ITINERARY DATA & BUILDER ──────────────────────────────────────────────
+var itineraries=[
+{must:["Sirmione – Rocca Scaligera a historické centrum na polostrove Lago di Garda","Arena di Verona – ikonický rímsky amfiteáter, zvonku zadarmo","Castel San Pietro – najkrajšia vyhliadka na Veronu pri západe slnka"],
+ sched:[["6:30","Odchod z Bratislavy"],["~9:00","Nabíjacia zastávka (Graz alebo Viedeň)"],["~12:00","Obed na diaľnici (A22, Trento / Rovereto)"],["~14:30","Sirmione – Rocca Scaligera, historické centrum, Punta Sirmione"],["16:30","Odchod do Verony (15 min)"],["17:00","Check-in hotel Verona"],["17:30","Arena di Verona (zvonku), Piazza delle Erbe, Ponte Pietra"],["18:30","Castel San Pietro – západ slnka, výťah alebo 10 min chôdze"],["19:30","Večera v starom meste"]]},
+{must:["Palais Princier Monaco a katedrála s hrobom Grace Kelly","Èze – stredoveká dedinka 429 m nad morom, výhľad na celú Riviéru","Antibes – Vieil Antibes a večerná prechádzka pri mori"],
+ sched:[["9:00","Odchod z Verony (trasa A4 – Milano – A10 – Janov)"],["~11:00","Nabíjanie (Savona alebo Sanremo)"],["~13:00","Príchod Monaco – obed pri Port Hercule"],["14:00","La Rocher – Palais Princier, katedrála Notre-Dame-Immaculée"],["15:00","Casino de Monte-Carlo – exteriér, Place du Casino"],["15:45","Odchod do Èze (15 min)"],["16:00","Èze – záhrada na útese, uličky, výhľad na Riviéru"],["17:00","Odchod do Antibes (45 min)"],["17:45","Check-in Antibes"],["18:30","Vieil Antibes – uličky, múry s výhľadom na more"],["20:00","Večera v Antibes"]]},
+{must:["Vieux Nice a Cours Saleya – farebné uličky a ranný trh","Colline du Château – vyhliadka na zátoky Nice z 92 m (zadarmo)","Saint-Paul-de-Vence – stredoveká dedinka plná galérií a výhľadov"],
+ sched:[["9:00","Odchod z Antibes"],["9:20","Saint-Paul-de-Vence – uličky, galérie, výhľad na Alpy a more"],["10:30","Grasse – prehliadka parfumérie Fragonard (zadarmo, 45 min)"],["11:30","Nice – Cours Saleya (trh do 13:00)"],["12:00","Vieux Nice – prechádzka farebnými uličkami"],["13:00","Obed v Starej Nice (socca, pissaladière alebo brasserie)"],["14:00","Promenade des Anglais – prechádzka k Place Masséna"],["14:45","Colline du Château – výťah (zadarmo), vodopád, panoráma"],["15:45","Villefranche-sur-Mer – záliv, kaplnka Cocteau (15 min od Nice)"],["17:00","Odchod do Antibes (30 min)"],["20:00","Večera v Antibes"]]},
+{must:["Saint-Tropez – Vieux Port a Citadelle s výhľadom na záliv","Cannes – La Croisette a Palais des Festivals","Iles de Lérins – výlet loďou na ostrov s kláštorom"],
+ sched:[["9:00","Odchod z Antibes smerom na Saint-Tropez"],["10:15","Saint-Tropez – Vieux Port, Place des Lices, Citadelle"],["12:00","Obed v Saint-Tropez"],["13:00","Port Grimaud (15 min) – kanálové mestečko"],["13:45","Odchod do Cannes (35 min)"],["14:20","Cannes – La Croisette, Palais des Festivals, Vieux-Port"],["15:15","Loď na Ile Sainte-Marguerite (~18 eur, 15 min) – pevnosť, les"],["17:00","Späť loďou do Cannes"],["17:30","Odchod do Antibes (30 min)"],["20:00","Večera v Antibes"]]},
+{must:["Notre-Dame de la Garde – 360° panoráma Marseille a mora z 162 m","Vieux-Port Marseille – srdce mesta, Le Panier, MuCEM","Pont du Gard – rímsky UNESCO akvadukt, ideálna zastávka pred Avignonom"],
+ sched:[["9:00","Odchod z Antibes (trasa A8)"],["~10:45","Príchod do Marseille"],["11:00","Notre-Dame de la Garde – panoráma 360°, votívne lode vo vnútri"],["11:45","Vieux-Port – prechádzka, MuCEM exteriér"],["12:15","Le Panier – najstaršia štvrť, street art, uličky"],["13:00","Obed na Vieux-Port (bouillabaisse alebo fritura)"],["14:00","Odchod z Marseille smerom na Avignon"],["15:15","Pont du Gard – zastávka, prechádzka pod akvaduktom (45 min)"],["16:15","Príchod do Avignonu, check-in"],["17:00","Pont Saint-Bénézet a hradby – prvý pohľad na staré mesto"],["18:00","Voľný čas v starom meste, nákupy"],["20:00","Večera v Avignone"]]},
+{must:["Arènes d'Arles – rímsky amfiteáter UNESCO, stále využívaný na zápasy","Carrières de Lumières – imerzívna svetelná show (rezervovať vopred!)","Les Baux-de-Provence – citadela na skalnom ostrohu Alpilles"],
+ sched:[["9:00","Odchod z Avignonu"],["9:35","Arles – Arènes d'Arles (vstup), Place du Forum – Van Goghova kaviareň"],["11:00","Odchod do Les Baux (25 min)"],["11:25","Carrières de Lumières – imerzívna svetelná show (rezervovať vopred!)"],["12:30","Obed v Les Baux (výhľad na Alpilles)"],["13:30","Les Baux citadela – ruiny hradu, katapulty, Val d'Enfer"],["15:00","Odchod do Camargue (45 min) – Salin de Giraud, flamingos"],["16:30","Saintes-Maries-de-la-Mer – pláž, bazilika, jazero Vaccarès"],["17:30","Odchod späť do Avignonu (1h 10 min)"],["18:45","Príchod do Avignonu"],["20:00","Večera v Avignone"]]},
+{must:["Palais des Papes – najväčší gotický palác sveta (UNESCO, audioguide)","Pont du Gard – rímsky trojposchodový akvadukt, ráno bez turistov","Gordes a Abbaye de Sénanque – dedinka na brale a kláštor v doline"],
+ sched:[["9:00","Odchod z Avignonu na Pont du Gard (30 min) – ráno pred davom"],["9:30","Pont du Gard – prechádzka pod mostom, múzeum (voliteľné)"],["10:30","Uzès (15 min od Pont du Gard) – Place aux Herbes, Duché"],["11:30","Obed v Uzès"],["12:30","Odchod do Avignonu (45 min)"],["13:15","Palais des Papes – prehliadka s audioguidom (1,5 h)"],["14:45","Pont Saint-Bénézet – vstup na most, výhľad na Rhône"],["15:30","Odchod do Gordes (45 min)"],["16:15","Abbaye de Sénanque (5 min od Gordes) – kláštor v doline"],["16:45","Gordes – dedinka na brale, výhľad na Luberon"],["17:30","Odchod späť do Avignonu (45 min)"],["20:00","Večera – posledný večer v Avignone"]]},
+{must:["Arènes de Nîmes – najlepšie zachovaný rímsky amfiteáter na svete","Aigues-Mortes – stredoveké hradby a flamingos priamo za bránami","Carcassonne La Cité – rozprávková citadela s dvojitými hradbami (UNESCO)"],
+ sched:[["9:00","Odchod z Avignonu smerom na Nîmes (45 min)"],["9:45","Nîmes – Arènes (vstup), Maison Carrée (exteriér)"],["11:15","Odchod do Aigues-Mortes (30 min)"],["11:45","Aigues-Mortes – hradby, Tour de Constance"],["12:30","Obed v Aigues-Mortes"],["13:15","Soľné polia Salins du Midi – flamingos z cesty (krátka zastávka)"],["13:30","Odchod do Carcassonne (2h 30 min)"],["16:00","Príchod, check-in Carcassonne"],["16:30","La Cité – bazilika Saint-Nazaire, prechádzka hradbami"],["18:00","Canal du Midi – večerná prechádzka pod platanmi"],["19:30","Večera vnútri La Cité alebo v Bastide Saint-Louis"]]},
+{must:["Carcassonne La Cité – Château Comtal a oba prstence stredovekých hradieb","Mirepoix – dokonale zachované stredoveké trhové námestie s arkádami","Château de Foix – tri veže dramaticky sa týčiace nad pyrenejským mestom"],
+ sched:[["9:00","La Cité – ráno pred davom: Château Comtal (vstup), bazilika Saint-Nazaire"],["11:00","Odchod do Mirepoix (45 min)"],["11:45","Mirepoix – trhové námestie, Dom des Consuls, arkády"],["12:30","Obed v Mirepoix (reštaurácia pod arkádami)"],["13:30","Odchod do Foix (30 min)"],["14:00","Château de Foix – múzeum histórie, výhľad z veže na Pyreneje"],["15:30","Odchod späť do Carcassonne (1h)"],["16:30","Bastide Saint-Louis – dolné mesto, Pont Vieux, pohľad na La Cité"],["17:30","Canal du Midi – bicykel alebo prechádzka pozdĺž kanála"],["19:30","Večera v Carcassonne (La Cité pri lampách)"]]},
+{must:["Vieux Lyon – UNESCO štvrť a obed v pravom lyonskom bouchone","Basilique de Fourvière – panoráma Lyonu a Álp z rímskeho kopca","Ženeva – Jet d'Eau a večerná prechádzka nábrežím Lac Léman"],
+ sched:[["9:00","Odchod z Carcassonne (trasa A61 – A9 – A7)"],["~11:30","Nabíjanie / zastávka (Montpellier alebo Valence)"],["~13:00","Príchod do Lyonu – Vieux Lyon"],["13:00","Obed v lyonskom bouchone (rezervovať vopred!)"],["14:30","Basilique de Fourvière – lanovka z Vieux Lyon, panoráma, mozaiky"],["15:30","Odchod z Lyonu do Ženevy (2h)"],["17:30","Príchod do Ženevy, check-in"],["18:15","Jet d'Eau – prechádzka po móle, efekt dúhy"],["18:45","Nábrežie Lac Léman – Quai du Mont-Blanc, Jardin Anglais"],["20:00","Večera v Ženeve (okolie Vieille Ville)"]]},
+{must:["Lausanne – Ouchy nábrežie a gotická katedrála s výhľadom na jazero","Bern Altstadt – UNESCO staré mesto s 6 km krytých podloubí a fontánami","Rosengarten Bern – panoráma Altstadt, rieky Aare a Bernských Álp"],
+ sched:[["9:00","Odchod z Ženevy do Lausanne (40 min)"],["9:40","Ouchy – nábrežie Lac Léman, Château d'Ouchy, výhľad na Savojské Alpy"],["10:20","Lausanne katedrála – výstup na vežu, prechádzka Altstadt"],["11:00","Olympijská záhrada – zadarmo, výhľad na jazero a Alpy"],["11:45","Odchod do Murten (45 min)"],["12:30","Murten – obed a prechádzka po stredovekých hradbách"],["13:30","Odchod do Bernu (30 min), check-in"],["14:30","Bern Altstadt – Zytglogge (každú celú hodinu), Kramgasse, fontány"],["16:30","Bärenpark – medvede, terasa s výhľadom na rieku Aare"],["17:15","Rosengarten – záhrada, panoráma Altstadt a Bernských Álp"],["18:00","Prechádzka brehom rieky Aare pod hradbami"],["20:00","Večera v Berne (Altstadt)"]]},
+{must:["Lauterbrunnen – Staubbach (297 m) a Trümmelbach Falls vo vnútri skaly","Gotthardský priesmyk 2106 m – legendárna alpská cesta (otvoriť treba overiť)","Kapellbrücke Lucern – najstarší krytý drevený most Európy (1333)"],
+ sched:[["9:00","Odchod z Bernu do Lauterbrunnen (50 min)"],["9:50","Staubbach Falls – krátka prechádzka k päte vodopádu (zadarmo)"],["10:20","Trümmelbach Falls (5 min) – 10 kaskád vo vnútri skaly, výťah (~12 CHF)"],["11:30","Obed v Lauterbrunnen"],["12:30","Odchod cez Andermatt na Gotthardský priesmyk"],["~14:00","Gotthardský priesmyk – zastávka, panoráma, jazierko pri hospode"],["14:30","Odchod smerom na Lucern (1h)"],["15:30","Príchod do Lucernu, check-in"],["16:00","Kapellbrücke – drevený most, obrazy pod strechou, Wasserturm"],["16:45","Altstadt – Löwendenkmal, Kornmarkt, hradobné veže"],["18:00","Nábrežie jazera – západ slnka nad vodou"],["20:00","Večera v Lucerne"]]},
+{must:["Mníchov – Marienplatz a zvonkohra Neues Rathaus (12:00)","Salzburg Altstadt UNESCO – Getreidegasse a Hohensalzburg","Mirabell záhrady – Sound of Music záhrady s výhľadom na hrad"],
+ sched:[["9:00","Odchod z Lucernu smerom na Mníchov (2h)"],["11:00","Mníchov – Marienplatz, Frauenkirche, Viktualienmarkt"],["12:00","Zvonkohra Neues Rathaus, obed na trhu alebo v Hofbräuhaus"],["13:15","Odchod do Salzburgu (1h 30 min)"],["14:45","Salzburg – Getreidegasse, Mozartov rodný dom, historické centrum"],["15:30","Hohensalzburg – lanovka, hradobný chodník, panoráma"],["16:30","Mirabell záhrady – fontány, výhľad na hrad"],["17:00","Odchod zo Salzburgu domov (3h)"],["20:00","Príchod domov do Bratislavy"]]}
+];
+
+function buildItinHtml(i){
+  var it=itineraries[i];
+  if(!it)return '';
+  var h="<div class='itin-box'>";
+  h+="<div class='itin-must-h'>&#11088; Must-see</div><div class='itin-must'>";
+  for(var m=0;m<it.must.length;m++)
+    h+="<div class='itin-must-item'>"+it.must[m]+"</div>";
+  h+="</div><div class='itin-sched-h'>&#128197; Navrhovan&yacute; itin&eacute;r&aacute;r</div><div class='itin-sched'>";
+  for(var s=0;s<it.sched.length;s++)
+    h+="<div class='itin-row'><span class='itin-time'>"+it.sched[s][0]+"</span><span>"+it.sched[s][1]+"</span></div>";
+  h+="</div></div>";
+  return h;
+}
+
 // ── TABLE ─────────────────────────────────────────────────────────────────
 function buildRows(){
   var tb=document.getElementById('tb'),html='';
@@ -470,6 +525,7 @@ function buildRows(){
     html+='</tr>';
     // tips row
     html+='<tr><td colspan="9" class="tips-td"><div class="tips-wrap" id="tips'+i+'">';
+    html+=buildItinHtml(i);
     html+='<div class="mleg"><span><span class="mldot" style="background:#2b6cb0"></span>Mestská turistika</span><span><span class="mldot" style="background:#276749"></span>Príroda &amp; výhľady</span><span><span class="mldot" style="background:#1a202c"></span>Ubytovanie / odjazd</span></div>';
     html+='<div class="map-box" id="map'+i+'"></div>';
     html+='<div id="cards'+i+'"></div>';

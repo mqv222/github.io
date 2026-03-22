@@ -146,7 +146,7 @@ async function fetchPlace(p){
 
 var days=[
 // ── DEŇ 1 · 31.3. ─────────────────────────────────────────────────────────
-{date:"31.3.",day:"Utorok",prog:"Presun z BA, popoludní Verona, večer Sirmione",route:"BA → Verona",t:"7:21",tn:"8:25",acc:"Verona / Sirmione",seg:"it",cx:[45.50,10.78],cz:9,places:[
+{date:"31.3.",day:"Utorok",prog:"Presun z BA, zastávka Sirmione, ubytovanie Verona",route:"BA → Sirmione → Verona",t:"7:21",tn:"8:25",acc:"Verona",seg:"it",cx:[45.50,10.78],cz:9,places:[
  {n:"Arena di Verona",w:"Arena di Verona",t:"c",la:45.4393,lo:10.9940,tm:"30 min",
   d:`Rímsky amfiteáter z 1. stor. n. l. s kapacitou 30 000 miest je jedným z najlepšie zachovaných na svete. Zvonku ho obídete zadarmo a zblízka pôsobí rovnako impozantne ako zvnútra. Vo vnútri sa každoročne konajú operné festivaly, najmä v letných mesiacoch. Vstupné do amfiteátra je okolo 10 €.`},
  {n:"Castel San Pietro – vyhliadka",w:"Verona",t:"c",la:45.4468,lo:10.9990,tm:"20 min",
@@ -470,7 +470,7 @@ function buildRows(){
     html+='</tr>';
     // tips row
     html+='<tr><td colspan="9" class="tips-td"><div class="tips-wrap" id="tips'+i+'">';
-    html+='<div class="mleg"><span><span class="mldot" style="background:#2b6cb0"></span>Mestská turistika</span><span><span class="mldot" style="background:#276749"></span>Príroda &amp; výhľady</span></div>';
+    html+='<div class="mleg"><span><span class="mldot" style="background:#2b6cb0"></span>Mestská turistika</span><span><span class="mldot" style="background:#276749"></span>Príroda &amp; výhľady</span><span><span class="mldot" style="background:#1a202c"></span>Ubytovanie / odjazd</span></div>';
     html+='<div class="map-box" id="map'+i+'"></div>';
     html+='<div id="cards'+i+'"></div>';
     html+='</div></td></tr>';
@@ -534,6 +534,25 @@ async function loadDay(i){
 }
 
 // ── MAP ───────────────────────────────────────────────────────────────────
+function mkBaseIcon(){
+  return L.divIcon({className:'',html:'<div style="width:16px;height:16px;border-radius:50%;background:#1a202c;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.65)"></div>',iconSize:[16,16],iconAnchor:[8,8],popupAnchor:[0,-10]});
+}
+// základňa/odjazd/príchod pre každý deň (čierne bodky na mape)
+var bases=[
+  [{n:"Bratislava – odjazd",la:48.1486,lo:17.1077},{n:"Sirmione – zastávka",la:45.4906,lo:10.6094},{n:"Verona – ubytovanie",la:45.4393,lo:10.9916}],
+  [{n:"Verona – odjazd",la:45.4393,lo:10.9916},{n:"Antibes – ubytovanie",la:43.5804,lo:7.1233}],
+  [{n:"Antibes – základňa",la:43.5804,lo:7.1233}],
+  [{n:"Antibes – základňa",la:43.5804,lo:7.1233}],
+  [{n:"Antibes – odjazd",la:43.5804,lo:7.1233},{n:"Avignon – ubytovanie",la:43.9493,lo:4.8055}],
+  [{n:"Avignon – základňa",la:43.9493,lo:4.8055}],
+  [{n:"Avignon – základňa",la:43.9493,lo:4.8055}],
+  [{n:"Avignon – odjazd",la:43.9493,lo:4.8055},{n:"Carcassonne – ubytovanie",la:43.2127,lo:2.3538}],
+  [{n:"Carcassonne – základňa",la:43.2127,lo:2.3538}],
+  [{n:"Carcassonne – odjazd",la:43.2127,lo:2.3538},{n:"Ženeva – ubytovanie",la:46.2044,lo:6.1432}],
+  [{n:"Ženeva – odjazd",la:46.2044,lo:6.1432},{n:"Bern – ubytovanie",la:46.9480,lo:7.4474}],
+  [{n:"Bern – odjazd",la:46.9480,lo:7.4474},{n:"Lucern – ubytovanie",la:47.0502,lo:8.3093}],
+  [{n:"Lucern – odjazd",la:47.0502,lo:8.3093},{n:"Bratislava – domov",la:48.1486,lo:17.1077}]
+];
 function mkIcon(t){
   var c=t==='c'?'#2b6cb0':'#276749';
   return L.divIcon({className:'',html:'<div style="width:14px;height:14px;border-radius:50%;background:'+c+';border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.5)"></div>',iconSize:[14,14],iconAnchor:[7,7],popupAnchor:[0,-10]});
@@ -542,11 +561,14 @@ function initMap(i){
   if(maps[i]){maps[i].invalidateSize();return;}
   var d=days[i];
   var m=L.map('map'+i,{center:d.cx,zoom:d.cz,scrollWheelZoom:false});
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:18}).addTo(m);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',subdomains:'abcd',maxZoom:19}).addTo(m);
   d.places.forEach(function(p){
     L.marker([p.la,p.lo],{icon:mkIcon(p.t)}).addTo(m)
      .bindPopup('<b>'+p.n+'</b>'+(p.x?'<br><span style="color:#dd6b20;font-size:.8em">⏱ '+p.x+'</span>':'')+(p.tm?'<br><span style="color:#6b46c1;font-size:.8em">🕐 min. '+p.tm+'</span>':''));
   });
+  if(bases[i]){bases[i].forEach(function(b){
+    L.marker([b.la,b.lo],{icon:mkBaseIcon(),zIndexOffset:1000}).addTo(m).bindPopup('<b>'+b.n+'</b>');
+  });}
   maps[i]=m;
 }
 

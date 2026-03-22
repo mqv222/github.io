@@ -11,11 +11,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#2d374
 .wrap{max-width:1440px;margin:0 auto;padding:20px}
 .hdr{background:linear-gradient(135deg,#1a365d,#2c5282,#2b6cb0);color:#fff;border-radius:16px;padding:24px 28px;margin-bottom:16px;box-shadow:0 4px 18px rgba(26,54,93,.35)}
 .hdr h1{font-size:1.6rem;font-weight:800;margin-bottom:4px}
-.hdr .sub{opacity:.78;font-size:.82rem;line-height:1.55;margin-bottom:18px}
-.stats{display:flex;gap:10px;flex-wrap:wrap}
-.stat{background:rgba(255,255,255,.15);border-radius:9px;padding:9px 18px}
-.stat-v{font-size:1.3rem;font-weight:700}
-.stat-l{font-size:.68rem;opacity:.7;text-transform:uppercase;letter-spacing:.05em}
+.hdr .sub{opacity:.78;font-size:.82rem;line-height:1.55}
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:.76rem;color:#4a5568;align-items:center}
 .leg{display:flex;align-items:center;gap:4px}
 .ldot{width:10px;height:10px;border-radius:3px}
@@ -23,8 +19,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#2d374
 table{width:100%;border-collapse:collapse;font-size:.83rem}
 thead tr{background:#1e2a3a;color:#fff}
 th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.dr{cursor:pointer;user-select:none}
 .dr td{padding:9px 12px;vertical-align:middle;border-bottom:1px solid #e8edf2}
-.dr:hover{filter:brightness(.97)}
+.dr:hover{filter:brightness(.95)}
+.dr.open{filter:brightness(.96)}
 .seg-td{width:5px;padding:0!important}
 .dc{white-space:nowrap;font-weight:600;font-size:.77rem;color:#4a5568}
 .dy{font-size:.76rem;color:#718096}
@@ -32,8 +30,8 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .rc{white-space:nowrap;color:#555;font-size:.79rem}
 .tc{white-space:nowrap;text-align:center;font-variant-numeric:tabular-nums}
 .ac{font-weight:600;font-size:.81rem;white-space:nowrap}
-.tbtn{background:none;border:1px solid #cbd5e0;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:.73rem;color:#4a5568;transition:all .15s;white-space:nowrap}
-.tbtn:hover,.tbtn.open{background:#ebf8ff;border-color:#63b3ed;color:#2b6cb0}
+.arr{text-align:center;font-size:.85rem;color:#a0aec0;width:26px;white-space:nowrap;transition:color .15s}
+.dr:hover .arr,.dr.open .arr{color:#2b6cb0}
 .tips-td{padding:0!important;border-bottom:1px solid #e8edf2}
 .tips-wrap{display:none;padding:8px 16px 18px}
 .tips-wrap.open{display:block}
@@ -61,8 +59,12 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .pc-dist{font-size:.71rem;color:#dd6b20;font-weight:600;margin-bottom:1px}
 .pc-time{font-size:.71rem;color:#6b46c1;font-weight:600;margin-bottom:6px}
 .pc-desc{font-size:.77rem;color:#4a5568;line-height:1.5;margin-bottom:8px}
-.pc-link{font-size:.73rem;color:#2b6cb0;text-decoration:none;font-weight:600;border:1px solid #bee3f8;border-radius:5px;padding:3px 9px;display:inline-block;transition:background .15s}
-.pc-link:hover{background:#ebf8ff}
+.pc-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.pc-link{font-size:.73rem;text-decoration:none;font-weight:600;border-radius:5px;padding:3px 9px;display:inline-block;transition:background .15s}
+.pc-link.en{color:#2b6cb0;border:1px solid #bee3f8}
+.pc-link.en:hover{background:#ebf8ff}
+.pc-link.sk{color:#276749;border:1px solid #c6f6d5}
+.pc-link.sk:hover{background:#f0fff4}
 .c-it{background:#5cb87a}.r-it{background:#f0fff4}
 .c-mo{background:#4fc3f7}.r-mo{background:#e8f7fe}
 .c-ca{background:#64a9d9}.r-ca{background:#eaf3fb}
@@ -79,12 +81,6 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 <div class="hdr">
   <h1>🚗 Road Trip 2026 · IT · FRA · SUI</h1>
   <div class="sub">Bratislava → Verona → Sirmione → Monaco → Antibes → Nice → Cannes → St. Tropez → Marseille → Avignon → Arles → Carcassonne → Lyon → Ženeva → Lausanne → Bern → Lauterbrunnen → Lucern → BA</div>
-  <div class="stats">
-    <div class="stat"><div class="stat-v">13 dní</div><div class="stat-l">31.3 – 12.4.2026</div></div>
-    <div class="stat"><div class="stat-v">4 krajiny</div><div class="stat-l">SK · IT · FR · CH</div></div>
-    <div class="stat"><div class="stat-v">~3 500 km</div><div class="stat-l">Odhadovaná trasa</div></div>
-    <div class="stat"><div class="stat-v">8 nocí</div><div class="stat-l">v 5 ubytovaniach</div></div>
-  </div>
 </div>
 <div class="legend">
   <span class="leg"><span class="ldot c-it"></span>Taliansko</span>
@@ -119,11 +115,12 @@ function isPhoto(u){
 async function fetchPlace(p){
   try{
     var slug=p.w.replace(/ /g,'_');
-    var [s,c]=await Promise.all([
+    var [s,c,lk]=await Promise.all([
       fetch(WSUM+encodeURIComponent(slug)).then(function(r){return r.json();}).catch(function(){return null;}),
-      fetch(WCOM+encodeURIComponent(p.w)).then(function(r){return r.json();}).catch(function(){return null;})
+      fetch(WCOM+encodeURIComponent(p.w)).then(function(r){return r.json();}).catch(function(){return null;}),
+      fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(slug)+'&prop=langlinks&lllang=sk&format=json&origin=*').then(function(r){return r.json();}).catch(function(){return null;})
     ]);
-    var imgs=[],url=wUrl(p.w);
+    var imgs=[],url=wUrl(p.w),skUrl='https://sk.wikipedia.org/w/index.php?search='+encodeURIComponent(p.n);
     if(s&&s.type!=='https://mediawiki.org/wiki/HyperSwitch/errors/not_found'){
       if(s.thumbnail&&s.thumbnail.source)imgs.push(s.thumbnail.source);
       if(s.content_urls&&s.content_urls.desktop)url=s.content_urls.desktop.page;
@@ -135,12 +132,18 @@ async function fetchPlace(p){
         if(isPhoto(u)&&imgs.indexOf(u)<0)imgs.push(u);
       }
     }
-    return {imgs:imgs.slice(0,3),url:url};
-  }catch(e){return {imgs:[],url:wUrl(p.w)};}
+    if(lk&&lk.query&&lk.query.pages){
+      var lkp=Object.values(lk.query.pages);
+      if(lkp.length&&lkp[0].langlinks&&lkp[0].langlinks.length){
+        skUrl='https://sk.wikipedia.org/wiki/'+encodeURIComponent(lkp[0].langlinks[0]['*'].replace(/ /g,'_'));
+      }
+    }
+    return {imgs:imgs.slice(0,3),url:url,skUrl:skUrl};
+  }catch(e){return {imgs:[],url:wUrl(p.w),skUrl:'https://sk.wikipedia.org/w/index.php?search='+encodeURIComponent(p.n)};}
 }
 
 var days=[
-// ── DEŇ 1 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 1 · 31.3. ─────────────────────────────────────────────────────────
 {date:"31.3.",day:"Utorok",prog:"Presun z BA, popoludní Verona, večer Sirmione",route:"BA → Verona",t:"7:21",tn:"8:25",acc:"Verona / Sirmione",seg:"it",cx:[45.50,10.78],cz:9,places:[
  {n:"Arena di Verona",w:"Arena di Verona",t:"c",la:45.4393,lo:10.9940,tm:"30 min",
   d:`Rímsky amfiteáter z 1. stor. n. l. s kapacitou 30 000 miest je jedným z najlepšie zachovaných na svete. Zvonku ho obídete zadarmo a zblízka pôsobí rovnako impozantne ako zvnútra. Vo vnútri sa každoročne konajú operné festivaly, najmä v letných mesiacoch. Vstupné do amfiteátra je okolo 10 €.`},
@@ -167,7 +170,8 @@ var days=[
  {n:"Parco del Mincio",w:"Mincio Regional Park",t:"n",la:45.3500,lo:10.7500,x:"30 min od Sirmione",tm:"1h",
   d:`Chránená krajinná oblasť na rieke Mincio s jazerami pokrytými leknínovými porastmi a mokraďami plnými vtákov. Rieka spája jazero Garda s historickou Mantovou a tvorí prirodzenú hranicu medzi Lombardiou a Benátskom. V jarných mesiacoch tu kvitnú lekná a hniezdí množstvo vtákov vrátane volavky popolavej a kormoránov. Sú tu vyznačené cyklotrasy aj krátke náučné chodníky pri vode.`}
 ]},
-// ── DEŇ 2 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 2 · 1.4. ──────────────────────────────────────────────────────────
+// Antibes tip presunutý do dňa 3 (2.4.)
 {date:"1.4.",day:"Streda",prog:"Presun do Monaka, večer ubytovanie v Antibes",route:"Verona → Monaco → Antibes",t:"5:08",tn:"5:32",acc:"Antibes",seg:"mo",cx:[43.70,7.30],cz:10,places:[
  {n:"Casino de Monte-Carlo",w:"Casino de Monte-Carlo",t:"c",la:43.7395,lo:7.4270,tm:"30 min",
   d:`Ikonické kasíno z roku 1863 v štýle belle époque je symbolom prepychu a luxusu celého Monaka. Exteriér s fontánami a záhradami je prístupný zadarmo a fotograficky vďačný. Vstup do hracích sál je spoplatnený a vyžaduje sa prezentácia pasu. Okolitá Place du Casino s Hôtel de Paris a kaviarňami je elegantnou zasádkou na pohľad.`},
@@ -181,8 +185,6 @@ var days=[
   d:`Rímska Trofej Augusta z roku 6 pr. n. l. je monumentom postaveným na oslavu Augustovho víťazstva nad alpskými kmeňmi. Stojí na výbežku 480 m n. m. s výhľadom priamo na Monaco a pobrežie. Je to menej navštevované miesto ako Eze, no rovnako pôsobivé. Vstup do parku je zadarmo, múzeum okolo 6 €.`},
  {n:"Menton",w:"Menton",t:"c",la:43.7742,lo:7.4958,x:"30 min od Monaka",tm:"1h",
   d:`Najvýchodnejšie francúzske mesto na Riviére s pastelovo zafarbenými domami, záhradami a talianskou hranicou za rohom. Staré mesto s úzkymi uličkami stúpajúcimi k bazilike Saint-Michel je jedným z najfajerverkovejších architektonicky záberov na celej Riviére. Menton je preslávené citrónovým festivalom a mimoriadne miernym podnebím. Záhrady Villa Ephrussi de Rothschild sú svetoznáme.`},
- {n:"Antibes – Vieil Antibes",w:"Antibes",t:"c",la:43.5803,lo:7.1241,x:"v Antibes",tm:"1h",
-  d:`Stredoveké opevnené mesto s trhom Marché Provençal predávajúcim kvety, olivy a sušené bylinky každé ráno okrem pondelka. Château Grimaldi zo 12. stor. dnes slúži ako Musée Picasso – Picasso tu strávil celý rok 1946 a zanechal veľkú zbierku diel. Uličky starého mesta sú autentické a menej turisticky prepláchnuté ako v Nice či Cannes. Rampy múrov sú prístupné zadarmo a ponúkajú výhľady na more.`},
  {n:"Jardin Exotique de Monaco",w:"Jardin Exotique de Monaco",t:"n",la:43.7337,lo:7.4148,x:"v Monaku",tm:"45 min",
   d:`Záhrada s jednou z najbohatších zbierok sukulentov a kaktusov na svete, pestovaná od roku 1933 na 45-stupňovom svahu. Z jej terás je panoráma celého Monaka, prístavu a mora absolútne unikátna. Pod záhradou sa nachádzajú prehistorické jaskyne s kosťami zvery z doby ľadovej. Vstup stojí okolo 8 € a zahŕňa aj komentovanú prehliadku jaskyne.`},
  {n:"Cap d'Antibes",w:"Cap d'Antibes",t:"n",la:43.5558,lo:7.1197,x:"10 min od Antibes",tm:"1h",
@@ -190,12 +192,15 @@ var days=[
  {n:"Corniche d'Or",w:"Corniche d'Or",t:"n",la:43.4300,lo:6.9600,x:"1h od Antibes",tm:"1h",
   d:`Vyhliadková pobrežná cesta N98 cez červené porfýrové skaly Massif de l'Estérel je jednou z najdramatickejších na celej Riviére. Červené skaly kontrastujúce s azúrovo-modrou farbou mora tvoria obraz ako z maľby. Cesta vedie pomedzi útesy, zátoky a malé pláže s výhľadmi z každého záhybu. Ideálne ako krátka odbočka pri presune.`}
 ]},
-// ── DEŇ 3 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 3 · 2.4. ──────────────────────────────────────────────────────────
+// Antibes tip pridaný tu (presunutý z dňa 1.4.)
 {date:"2.4.",day:"Štvrtok",prog:"Nice, Grasse, Antibes",route:"okolie Antibes",t:"—",tn:"—",acc:"Antibes",seg:"ca",cx:[43.76,7.06],cz:10,places:[
+ {n:"Antibes – Vieil Antibes",w:"Antibes",t:"c",la:43.5803,lo:7.1241,x:"v Antibes",tm:"1h",
+  d:`Stredoveké opevnené mesto s trhom Marché Provençal predávajúcim kvety, olivy a sušené bylinky každé ráno okrem pondelka. Château Grimaldi zo 12. stor. dnes slúži ako Musée Picasso – Picasso tu strávil celý rok 1946 a zanechal veľkú zbierku diel. Uličky starého mesta sú autentické a menej turisticky prepláchnuté ako v Nice či Cannes. Rampy múrov sú prístupné zadarmo a ponúkajú výhľady na more.`},
  {n:"Promenade des Anglais",w:"Promenade des Anglais",t:"c",la:43.6954,lo:7.2662,x:"30 min od Antibes",tm:"30 min",
   d:`Sedem kilometrov dlhá promenáda lemovaná palmami pozdĺž Azúrového mora je symbolom Nice a jednou z najznámejších prechádzok na svete. Postavili ju v roku 1830 za finančnej pomoci anglickej kolónie, odtiaľ pochádza jej meno. Pri rannom svetle je tu takmer prázdno a výhľad na more je nádherný. Dobré miesto na raňajky v niektorej z kaviarní s terasou priamo pri mori.`},
  {n:"Vieux Nice & Cours Saleya",w:"Old Nice",t:"c",la:43.6964,lo:7.2766,x:"30 min od Antibes",tm:"1h",
-  d:`Stará Nice je labyrint úzkych uličiek s farebnými okrovými a červenými barokovými fasádami s talianskym charakterom. Cours Saleya je živé námestie s každodenným kvetinovým a potravinovým trhom (ráno do 13:00 okrem pondelka). Miestna soiceta sa tu stretáva v kaviarňach a reštauráciách v tieni markíz. Prechádzka bez cieľa tu trvá nekonečne dlho, každá ulica skrýva nový detail.`},
+  d:`Stará Nice je labyrint úzkych uličiek s farebnými okrovými a červenými barokovými fasádami s talianskym charakterom. Cours Saleya je živé námestie s každodenným kvetinovým a potravinovým trhom (ráno do 13:00 okrem pondelka). Miestna societa sa tu stretáva v kaviarňach a reštauráciách v tieni markíz. Prechádzka bez cieľa tu trvá nekonečne dlho, každá ulica skrýva nový detail.`},
  {n:"Place Masséna",w:"Place Masséna",t:"c",la:43.6977,lo:7.2712,x:"30 min od Antibes",tm:"20 min",
   d:`Reprezentačné hlavné námestie Nice s červeno-bielou šachovnicovou dlažbou, fontánami a sochou Apolla na vysokom stĺpe. Spája starú a novú časť mesta a slúži ako uzlový bod mestskej dopravy a kultúrnych udalostí. V noci sú tu inštalácie súčasného umenia – premietané alebo svietiace sochy na stĺpoch. Vstup zadarmo, okolie plné obchodov a kaviarní.`},
  {n:"Colline du Château – vyhliadka",w:"Castle Hill, Nice",t:"c",la:43.6941,lo:7.2803,x:"30 min od Antibes (v Nice)",tm:"30 min",
@@ -213,7 +218,7 @@ var days=[
  {n:"Parc du Mont Boron",w:"Mont Boron",t:"n",la:43.7020,lo:7.2953,x:"35 min od Antibes (v Nice)",tm:"45 min",
   d:`Borovicový les nad morom na výbežku medzi Nice a Villefranche ponúka tiché chodníčky s výhľadmi na obe zátoky. Park je obľúbený u Niçanov na ranné jogging a rodinné prechádzky. Zvyšky pevnosti Mont Alban na vrchole (16. stor.) sú zadarmo prístupné. Je to oáza pokoja medzi dvoma najrušnejšími bodmi Riviéry.`}
 ]},
-// ── DEŇ 4 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 4 · 3.4. ──────────────────────────────────────────────────────────
 {date:"3.4.",day:"Piatok",prog:"Cannes, Port Grimaud, Saint Tropez",route:"okolie Antibes",t:"—",tn:"—",acc:"Antibes",seg:"ca",cx:[43.41,6.84],cz:9,places:[
  {n:"Cannes",w:"Cannes",t:"c",la:43.5528,lo:7.0274,x:"30 min od Antibes",tm:"1h",
   d:`La Croisette je 2 km dlhá promenáda lemovaná palmami a luxusnými hotelmi, symbol filmového sveta. Pred Palais des Festivals sú odtlačky rúk celebrít v dlažbe – skvelé miesto na fotografovanie. Vieux-Port s farebnými loďami a rybármi je menej turistický. Rue d'Antibes tesne za Croisette ponúka butiky, brasserie a miestny pulz.`},
@@ -232,7 +237,7 @@ var days=[
  {n:"Presqu'île de Giens",w:"Giens",t:"n",la:43.0397,lo:6.1481,x:"1h 30 min od Antibes",tm:"1h",
   d:`Polostrov spojený s pevninou dvoma piesočnými zábranami obklopuje lagúnu Pesquiers – biotop flamingov a rôznych vodných vtákov. Pláže na oboch stranách polostrova sú divšie a menej preplnené ako na hlavnej Riviére. Z južného cípu polostrova odplávajú trajekty na ostrov Porquerolles – ostrov bez áut s koralovými plážami. Výhľad na zálivy a pevninu je výnimočný.`}
 ]},
-// ── DEŇ 5 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 5 · 4.4. ──────────────────────────────────────────────────────────
 {date:"4.4.",day:"Sobota",prog:"Presun cez Marseille do Avignonu",route:"Antibes → Marseille → Avignon",t:"3:09",tn:"3:09",acc:"Avignon",seg:"pr",cx:[43.55,5.20],cz:8,places:[
  {n:"Notre-Dame de la Garde – vyhliadka",w:"Notre-Dame de la Garde",t:"c",la:43.2840,lo:5.3710,x:"zastávka v Marseille",tm:"30 min",
   d:`Neorománska bazilika z roku 1864 na vrchole 162 m vysokého kopca je strážnou patronkou marseillských námorníkov a dominantou celého mesta. Z jej terás je 360° výhľad na Marseille, prístav, Stredozemné more a Alpilles v diaľke. Vo vnútri sú zavesené votívne lode a maľby námorníkov ďakujúcich za záchranu. Vstup je zadarmo.`},
@@ -251,14 +256,15 @@ var days=[
  {n:"Silvacane Abbey",w:"Silvacane Abbey",t:"n",la:43.7200,lo:5.4100,x:"30 min od Avignonu",tm:"30 min",
   d:`Cistercitské opátstvo z 12. stor. stojí v tichej krajine pri rieke Durance a je jednou z troch sesterských cistercitských kláštorov Provence. Gotická klenba lode a klauzúra s fontánou sú dokonalou ukážkou cistercitskej puristickej architektúry. V okolí nie sú takmer žiadni turisti a atmosféra pokoja je tu hmatateľná. Vstupné okolo 8 €.`}
 ]},
-// ── DEŇ 6 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 6 · 5.4. ──────────────────────────────────────────────────────────
+// Arles tipy sú tu (a len tu)
 {date:"5.4.",day:"Nedeľa",prog:"Arles, Les Baux-de-Provence, Camargue",route:"výlet z Avignonu",t:"—",tn:"—",acc:"Avignon",seg:"pr",cx:[43.63,4.70],cz:9,places:[
  {n:"Arènes d'Arles",w:"Arles Amphitheatre",t:"c",la:43.6773,lo:4.6302,x:"35 min od Avignonu",tm:"45 min",
   d:`Rímsky amfiteáter z 1. stor. n. l. s kapacitou 21 000 miest je na zozname UNESCO a stále sa využíva na tradičné provansálske zápasy s býkmi (Course Camarguaise). Zachoval sa takmer úplne, vrátane vnútorného prsteňa arkád a koridorov. V stredoveku v ňom žilo niekoľko stoviek ľudí a bol premenený na malé mestečko s dvoma kostolmi. Vstup okolo 9 €, výhľad z vrchného poschodia na Arles a okolie je výnimočný.`},
  {n:"Arles – Place du Forum & LUMA",w:"Arles",t:"c",la:43.6768,lo:4.6268,x:"35 min od Avignonu",tm:"1h",
   d:`Place du Forum je kaviarnické centrum Arles, kde Van Gogh v roku 1888 namaľoval svoju Nočnú kaviareň – replika s žltou terasou je dodnes na mieste. Neďaleká LUMA Arles je futuristická kultúrna inštitúcia vo Frank Gehryho veži z nehrdzavejúcej ocele, otvorená v roku 2021. Rozsiahly areál LUMA v konvertovanej železničnej stanici je zaujímavý aj bez vstupenky. Kombinovať oboje trvá zhruba hodinu.`},
  {n:"Les Baux-de-Provence",w:"Les Baux-de-Provence",t:"c",la:43.7443,lo:4.7927,x:"55 min od Avignonu",tm:"1h 30 min",
-  d:`Stredoveká citadela na vápencovom ostrohu masívu Alpilles s panorámou Provence – olivové háje, záhrady a vzdialené more. Ruiny stredovekého hradu Baux s katapultmi a bojovými strojmi sú prístupné za vstupné. Dedinka pod hradom má galériami, provansálske obchody a výborné reštaurácie. Kombinácia s Carrières de Lumières hneď vedľa je ideálna na pol dňa.`},
+  d:`Stredoveká citadela na vápencovom ostrohu masívu Alpilles s panorámou Provence – olivové háje, záhrady a vzdialené more. Ruiny stredovekého hradu Baux s katapultmi a bojovými strojmi sú prístupné za vstupné. Dedinka pod hradom má galérie, provansálske obchody a výborné reštaurácie. Kombinácia s Carrières de Lumières hneď vedľa je ideálna na pol dňa.`},
  {n:"Carrières de Lumières",w:"Carrières de Lumières",t:"c",la:43.7434,lo:4.7887,x:"55 min od Avignonu",tm:"1h",
   d:`Opustený kamenný lom s 14 m vysokými svislými stenami je dejiskom imerzívnej zvukovej a obrazovej show, kde sa diela veľkých maliarov premietajú na 3 000 m² stien. Každý rok sa téma mení – v minulosti boli to Cézanne, Van Gogh, Dalí alebo Kandinsky. Akustika a atmosféra studeného lomu sú nadprirodzené. Vstupné okolo 14 €, rezervácia odporúčaná.`},
  {n:"Tarascon",w:"Tarascon",t:"c",la:43.8063,lo:4.6597,x:"25 min od Avignonu",tm:"45 min",
@@ -276,7 +282,8 @@ var days=[
  {n:"Val d'Enfer",w:"Les Baux-de-Provence",t:"n",la:43.7454,lo:4.7820,x:"55 min od Avignonu (pri Les Baux)",tm:"30 min",
   d:`Dramatická skalná roklina priamo pod mestečkom Les Baux je vytesaná eróziou do bielych vápencových stien. Lesklé steny, podivné tvary skál a prasklinami presvitajúce svetlo pôsobia mysticky – v stredoveku sa verilo, že tu sídli peklo. Krátka pešia trasa okolo rokliny trvá asi 20 minút a je zadarmo. Carrières de Lumières sú vtesnané priamo do tejto rokliny.`}
 ]},
-// ── DEŇ 7 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 7 · 6.4. ──────────────────────────────────────────────────────────
+// Avignon tipy sú tu (a len tu)
 {date:"6.4.",day:"Pondelok",prog:"Avignon, Uzès, Gordes, Roussillon, Pont du Gard",route:"výlet z Avignonu",t:"—",tn:"—",acc:"Avignon",seg:"pr",cx:[43.98,5.00],cz:9,places:[
  {n:"Palais des Papes",w:"Palace of the Popes, Avignon",t:"c",la:43.9514,lo:4.8079,x:"v Avignone",tm:"1h 30 min",
   d:`Najväčší gotický palác sveta bol sídlom pápežov v rokoch 1309–1377, keď sa centrum kresťanstva presunulo z Ríma do Avignonu. Komplex 15 000 m² s dvoma palácmi, kaplnkami a záhradami je na zozname UNESCO. Audioguide vás prevedie komnatami so zvyškami freskiek od Mattea Giovanettiho. Vstupné okolo 12 €, kombinovaný lístok s Pont d'Avignon za 14 €.`},
@@ -303,7 +310,8 @@ var days=[
  {n:"Dentelles de Montmirail",w:"Dentelles de Montmirail",t:"n",la:44.1800,lo:5.0500,x:"1h od Avignonu",tm:"1h",
   d:`Skalné zuby Provence – ostrý vápencový hrebeň – sú viditeľné z diaľky a dominujú krajine medzi Orange a Mont Ventoux. Krátke turistické chodníky umožňujú výstupy na priesmyky s panorámou na vinohradnícke dediny Gigondas a Vacqueyras. Kombinácia s Vaison-la-Romaine je geograficky logická. Vstup zadarmo.`}
 ]},
-// ── DEŇ 8 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 8 · 7.4. ──────────────────────────────────────────────────────────
+// Carcassonne tip ODSTRÁNENÝ (bude len v dni 8.4.)
 {date:"7.4.",day:"Utorok",prog:"Presun do Carcassonne cez Nîmes a Aigues-Mortes",route:"Avignon → Nîmes → Aigues-Mortes → Carcassonne",t:"2:34",tn:"2:34",acc:"Carcassonne",seg:"la",cx:[43.62,3.36],cz:8,places:[
  {n:"Pont du Gard",w:"Pont du Gard",t:"n",la:43.9474,lo:4.5355,x:"30 min od Avignonu, ranná zastávka pred Nîmes",tm:"45 min",
   d:`Trojposchodový rímsky akvadukt UNESCO z 1. stor. n. l. je ideálnou rannou zastávkou pri odjazde z Avignonu pred príchodom do Nîmes. Ráno je tu menej ľudí a svetlo na kamenných oblúkoch je nádherné. Kúpanie v rieke Gardon pod mostom je v apríli ešte chladné, no piesočné brehy sú príjemné. Vstupné (parkovné) okolo 9 €.`},
@@ -315,8 +323,6 @@ var days=[
   d:`Stredoveké mestečko s perfektne zachovanými hradbami z 13. stor. stojí uprostred soľných polí a lagún Camargue. Hradby s 20 vežami obklopujú pravidelné centrum s ulicami ako šachovnica – možno po nich prejsť celé na obhliadkovom chodníku. Tour de Constance v nároží bola väzením hugenotiek počas náboženských vojen. Vstupné na hradby okolo 8 €.`},
  {n:"Montpellier",w:"Montpellier",t:"c",la:43.6083,lo:3.8790,x:"po ceste Nîmes → Carcassonne",tm:"1h",
   d:`Živá Place de la Comédie a historické centrum s jednou z najstarších európskych lekárskych fakúlt (1220) je ideálne na obed po ceste. Tram mesta sa prelína s pestrým študentským životom a arkádovými ulicami starého mesta. Promenáda okolo námestia je plná kaviarní. Ľahká zastávka na 1 hodinu.`},
- {n:"Carcassonne",w:"Carcassonne",t:"c",la:43.2072,lo:2.3647,x:"cieľ dňa",tm:"2h",
-  d:`Opevnené mesto UNESCO s 3 km dlhými dvojitými hradbami a 52 vežami je najlepšie zachovanou stredovekou citadelou Európy. Château Comtal vo vnútri a románska bazilika Saint-Nazaire s gotickými vitrážami sú absolútne vrcholy. Dolné mesto Bastide Saint-Louis je menej turistické a autentickejšie. Večerná prehliadka La Cité vo svetlách je neopísateľná – ubytovanie vnútri hradieb je zážitok.`},
  {n:"Camargue pri Aigues-Mortes",w:"Camargue",t:"n",la:43.5200,lo:4.1500,x:"pri zastávke v Aigues-Mortes",tm:"30 min",
   d:`Priamo za hradbami Aigues-Mortes sa rozkladajú soľné polia Salins du Midi s flamingami viditeľnými z cesty. Flamingos sa tu vyskytujú po celý rok, v apríli v tisícoch. Cesta D979 pozdĺž soľných paniev je krátka vyhliadková odbočka. Vstup do soľných polí nie je nutný – stačí zastaviť pri ceste.`},
  {n:"Étang de Thau",w:"Étang de Thau",t:"n",la:43.4100,lo:3.6400,x:"po ceste Nîmes → Carcassonne",tm:"20 min",
@@ -324,14 +330,15 @@ var days=[
  {n:"Canal du Midi",w:"Canal du Midi",t:"n",la:43.2100,lo:2.3500,x:"v Carcassonne",tm:"30 min",
   d:`UNESCO kanál z roku 1681 prechádza priamo pri Carcassonne s alejami platanov nad tichými vodami – večerná prechádzka po jeho brehu je relaxačným záverom dňa. Barky a hausbóty kotvené pri brehoch dotvárajú atmosféru juhofrancúzskeho pomalého životného štýlu. Kanál spája Atlantik so Stredozemím – 240 km plavebnej cesty. Bicyklová cesta pozdĺž kanála je vyznačená.`}
 ]},
-// ── DEŇ 9 ─────────────────────────────────────────────────────────────────
+// ── DEŇ 9 · 8.4. ──────────────────────────────────────────────────────────
+// Carcassonne tipy sú tu (a len tu)
 {date:"8.4.",day:"Streda",prog:"Carcassonne, Foix",route:"okolie Carcassonne",t:"—",tn:"—",acc:"Carcassonne",seg:"la",cx:[43.09,2.00],cz:9,places:[
  {n:"Carcassonne – La Cité",w:"Carcassonne",t:"c",la:43.2072,lo:2.3647,x:"v Carcassonne",tm:"2h",
   d:`Opevnené vrchné mesto s dvojitým prstencom hradieb a 52 vežami je absolútnym vrcholom stredovekej architektúry Francúzska. Château Comtal vo vnútri (vstup okolo 9 €) odhaľuje históriu od vizigótskych až po katarské dejiny. Bazilika Saint-Nazaire s gotickými vitrážami zo 14. stor. je jednou z najkrajších v Languedocu. Večerné osvetlenie La Cité je fenomenálne – oplatí sa zostať po setmení.`},
  {n:"Bastide Saint-Louis",w:"Bastide Saint-Louis",t:"c",la:43.2115,lo:2.3509,x:"v Carcassonne",tm:"45 min",
   d:`Dolné mesto Carcassonne bolo vybudované v 13. stor. s pravidelnou šachovnicovou uličnou sieťou na príkaz Ľudovíta IX. Menej turistov, miestne obchody a reštaurácie sa sústreďujú okolo Place Carnot s fontánou. Most Pont Vieux z 14. stor. spájajúci obe časti mesta je skvostným pohľadom na La Cité. Výlet sem po návšteve citadely vám ukáže každodenné mesto bez turistickej scenérie.`},
  {n:"Foix",w:"Foix",t:"c",la:42.9640,lo:1.6052,x:"1h od Carcassonne",tm:"1h",
-  d:`Château de Foix s tromi vežami sa dramaticky týčí na skalnatom kopci priamo nad historickým centrom mesta pri vstupe do Pyrenejí. Hrad je múzeom ariège histórie od galsko-rímskych čias po stredovek. Centrum mesta s rybou riekou Ariège a gotickým kostolom je príjemné na prechádzku. Výhľad z veže hradu na pyrenejské štíty je výnimočný.`},
+  d:`Château de Foix s tromi vežami sa dramaticky týčí na skalnatom kopci priamo nad historickým centrom mesta pri vstupe do Pyrenejí. Hrad je múzeom ariège histórie od galsko-rímskych čias po stredovek. Centrum mesta s riekou Ariège a gotickým kostolom je príjemné na prechádzku. Výhľad z veže hradu na pyrenejské štíty je výnimočný.`},
  {n:"Mirepoix",w:"Mirepoix, Ariège",t:"c",la:43.0905,lo:1.8730,x:"45 min od Carcassonne",tm:"45 min",
   d:`Stredoveké trhové námestie s drevenými arkádami na štyroch stranách, z ktorých najstaršie pochádzajú z 13. stor., patrí medzi najkrajšie v Európe. Dom des Consuls má bohatú rezbársku výzdobu drevených trámov na fasáde. Námestie je každé pondelok dejiskom tradičného trhu. Malé mestečko pôsobí ako živé múzeum stredoveku.`},
  {n:"Minerve",w:"Minerve, Hérault",t:"c",la:43.3880,lo:2.6990,x:"1h od Carcassonne",tm:"1h",
@@ -343,7 +350,8 @@ var days=[
  {n:"Gorges de Galamus",w:"Gorges de Galamus",t:"n",la:42.8800,lo:2.5300,x:"1h 20 min od Carcassonne",tm:"1h",
   d:`Dramatická úzka roklina vytesaná riekou Agly do vápencových skál patrí medzi najmenej navštevované a najkrajšie skalné rokliny južného Francúzska. Cesta D10 prechádza tunelom priamo cez skalu a popri útesoch s výhľadmi do hĺbky rokliny. Pustovňa Saint-Antoine de Galamus je vytesaná priamo do skalnej steny nad riekou. Vstup do pustovne je zadarmo.`}
 ]},
-// ── DEŇ 10 ────────────────────────────────────────────────────────────────
+// ── DEŇ 10 · 9.4. ─────────────────────────────────────────────────────────
+// Ženeva tipy sú tu (a len tu)
 {date:"9.4.",day:"Štvrtok",prog:"Presun do Ženevy cez Lyon (obed s Melanie)",route:"Carcassonne → Lyon → Ženeva",t:"5:43",tn:"6:20",acc:"Ženeva",seg:"sw",cx:[45.97,5.49],cz:8,places:[
  {n:"Vieux Lyon",w:"Old Lyon",t:"c",la:45.7602,lo:4.8267,x:"zastávka na trase, obed",tm:"1h",
   d:`UNESCO renesančná štvrť Saint-Jean je labyrintom traboules – krytých priechodov cez dvorce a schodiská spájajúcich ulice, objavených len miestnych. Pravé lyonské bouchony sú bistrá s tradičnou kuchyňou (lyonská saláma, quenelles, tête de veau) – obed na 12–18 € je výbornou zastávkou. Fasády s ornamentálnymi farebnosťami zo 16. stor. sú unikátom talianskeho renesančného vplyvu. Rezervujte si bouchon vopred.`},
@@ -366,7 +374,8 @@ var days=[
  {n:"Jardin Anglais",w:"Jardin Anglais, Geneva",t:"n",la:46.2033,lo:6.1577,x:"v Ženeve",tm:"30 min",
   d:`Anglická záhrada pri jazere Léman je domovom slávnych kvetinových hodín (L'Horloge Fleurie) so 6 500 kvetmi – symbol Ženevy. Záhrada plynule prechádza do nábrežia a ponúka výhľad na Jet d'Eau. V apríli sú prvé kvety a záhrada začína žiť. Vstup zadarmo.`}
 ]},
-// ── DEŇ 11 ────────────────────────────────────────────────────────────────
+// ── DEŇ 11 · 10.4. ────────────────────────────────────────────────────────
+// Bern tipy sú tu (a len tu)
 {date:"10.4.",day:"Piatok",prog:"Presun cez Lausanne do Bern",route:"Ženeva → Lausanne → Bern",t:"2:08",tn:"2:08",acc:"Bern",seg:"sw",cx:[46.74,7.04],cz:9,places:[
  {n:"Lausanne Cathedral",w:"Lausanne Cathedral",t:"c",la:46.5231,lo:6.6331,x:"zastávka v Lausanne",tm:"30 min",
   d:`Gotická katedrála z 13. stor. je považovaná za jeden z najkrajších gotických kostolov Švajčiarska s mimoriadne zachovanými farebnými vitrážami v severnom transepte z roku 1231. Výstup na vežu (200 schodov) odmeňuje panorámou jazera Léman, Jury a pri jasnom počasí Álp. Vstup do katedrály je zadarmo, vyhliadka na vežu stojí okolo 5 CHF. Katedrála je tiež jedinou v Európe, kde dodnes funguje nočný strážnik volajúci hodiny od 22:00 do 2:00.`},
@@ -377,7 +386,7 @@ var days=[
  {n:"Murten / Morat",w:"Murten",t:"c",la:46.9276,lo:7.1154,x:"30 min od Bernu",tm:"1h",
   d:`Dvojjazyčné mestečko s perfektne zachovanými stredovekými hradbami, po ktorých môžete prejsť celý obvod na krytom chodníku. Gotická brána, mestská veža a stredoveké ulice s arkádami tvoria dokonalé stredoveké divadlo. V roku 1476 tu Burgundci utrpeli zdrvujúcu porážku od Švajčiarov. Mesto je menšie ako Bern, no atmosférou rovnako silné.`},
  {n:"Fribourg",w:"Fribourg",t:"c",la:46.8065,lo:7.1617,x:"35 min od Bernu",tm:"1h",
-  d:`Gotická katedrála Saint-Nicolas z 13. stor. s 74 m vysokou vežou dominuje skalnatému ostrohu nad riekou Sarine. Stredoveké ulice v spodnej časti mesta (Basse-Ville) si zachovali autentický charakter. Zaujímavou švajčiarskou zvláštnosťou je, že lanovka spájajúca dve časti mesta je poháňaná odpadovou vodou z domácností. Fribourg je centrum švajčiarskej katolíckej kultúry.`},
+  d:`Gotická katedrála Saint-Nicolas z 13. stor. s 74 m vysokou vežou dominuje skalnatému ostrohu nad riekou Sarine. Stredoveké ulice v spodnej časti mesta (Basse-Ville) si zachovali autentický charakter. Zaujímavou zvláštnosťou je, že lanovka spájajúca dve časti mesta je poháňaná odpadovou vodou z domácností. Fribourg je centrum švajčiarskej katolíckej kultúry.`},
  {n:"Bern Altstadt",w:"Altstadt of Berne",t:"c",la:46.9480,lo:7.4474,x:"v Berne",tm:"1h 30 min",
   d:`UNESCO staré mesto s 6 km krytých podloubí (Lauben) je najdlhšou krytou promenádou Európy – vo Berne v daždi nikdy nezdravíte. Historické centrum so 100 fontánami, z toho 11 ozdobnými renesančnými zo 16. stor., je prechádzkou históriou. Každá fontána má vlastný príbeh – Kindlifresserbrunnen (Zberač detí) je najznámejší. Parkovanie mimo centra a MHD je odporúčané.`},
  {n:"Zytglogge",w:"Zytglogge",t:"c",la:46.9479,lo:7.4464,x:"v Berne",tm:"20 min",
@@ -393,7 +402,8 @@ var days=[
  {n:"Gurten",w:"Gurten (mountain)",t:"n",la:46.9092,lo:7.4392,x:"20 min od Bernu (lanovka)",tm:"1h",
   d:`Bernský výletný kopec vo výške 858 m n. m. je dosažiteľný lanovkou z Wabern a ponúka panorámu Álp od Jungfrau po Stockhorn. Je to miestny výletný cieľ Berňanov – s detskými ihriškami a rozhľadňou. V apríli sú tu ešte zvyšky snehu na vrchole, no výhľad na mestskú krajinu a hory je jasný. Lanovka stojí okolo 7 CHF.`}
 ]},
-// ── DEŇ 12 ────────────────────────────────────────────────────────────────
+// ── DEŇ 12 · 11.4. ────────────────────────────────────────────────────────
+// Lucern tipy sú tu (a len tu)
 {date:"11.4.",day:"Sobota",prog:"Presun cez Lauterbrunnen a Gotthardpass do Lucern",route:"Bern → Lauterbrunnen → Gotthard → Lucern",t:"4:25",tn:"4:30",acc:"Lucern",seg:"sw",cx:[46.82,8.11],cz:8,places:[
  {n:"Lauterbrunnen",w:"Lauterbrunnen",t:"c",la:46.5938,lo:7.9081,x:"zastávka na trase z Bernu",tm:"45 min",
   d:`Dedinka v úzkom údolí ohradenom 300 m skalnými stenami je dejiskom 72 vodopádov – viac ako kdekoľvek inde v Európe. Tolkien sa tu inšpiroval pri vytváraní Rivendellu a C. S. Lewis pri Narnii. Staubbach Falls padá priamo do dediny viditeľný z každého kútu. V apríli sú vodopády v plnom jarnom prietoku po taní snehu.`},
@@ -402,7 +412,7 @@ var days=[
  {n:"Kapellbrücke",w:"Chapel Bridge",t:"c",la:47.0519,lo:8.3062,x:"v Lucerne",tm:"20 min",
   d:`Najstarší krytý drevený most Európy z roku 1333 je ikonou Lucernu a Švajčiarska. Pod strechou mosta sú zavesené 17. storočné obrazy zobrazujúce dejiny Lucernu a švajčiarskej konfederácie. Most bol z časti poničený požiarom v roku 1993 a rekonštruovaný. Pohľad na most pri rannom svetle nad Reusom je jedným z najfotografovanejších záberov Švajčiarska.`},
  {n:"Altstadt Lucern",w:"Lucerne",t:"c",la:47.0512,lo:8.3048,x:"v Lucerne",tm:"1h",
-  d:`Staré mesto Lucernu s freskami na fasádach domov, stredovekými mestskými hradbami s vežami a živým trhovým námestím Kornmarkt je jedno z najkrajších v Alpách. Löwendenkmal – lev vytesaný do skaly na pamiatku padlých švajčiarskych gardistov – Twain ho opísal ako najsmutnejší kúsok kameňa na svete. Múzeá dopravy a umenia v okolí sú výborné celodenné ciele. Odporúčame plávanie loďou po jazere ako záver dňa.`},
+  d:`Staré mesto Lucernu s freskami na fasádach domov, stredovekými mestskými hradbami s vežami a živým trhovým námestím Kornmarkt je jedno z najkrajších v Alpách. Löwendenkmal – lev vytesaný do skaly na pamiatku padlých švajčiarskych gardistov – Twain ho opísal ako najsmutnejší kúsok kameňa na svete. Múzeá dopravy a umenia v okolí sú výborné celodenné ciele. Odporúčame plavbu loďou po jazere ako záver dňa.`},
  {n:"Staubach Fall",w:"Staubach Fall",t:"n",la:46.5950,lo:7.9093,x:"v Lauterbrunnen",tm:"20 min",
   d:`Jeden z najvyšších vodopádov Európy s 297 m voľného pádu padá priamo do dediny Lauterbrunnen – Goethe napísal pod ním báseň. Vodopád je viditeľný z dediny i z diaľky a v apríli je pri maximálnom jarnom prietoku. Krátka 15-minútová prechádzka privedie k pätám vodopádu a do tunela za ním. Vstup zadarmo.`},
  {n:"Trümmelbach Falls",w:"Trümmelbach Falls",t:"n",la:46.5776,lo:7.9093,x:"5 min od Lauterbrunnen",tm:"1h",
@@ -414,7 +424,7 @@ var days=[
  {n:"Mount Pilatus",w:"Mount Pilatus",t:"n",la:46.9787,lo:8.2524,x:"30 min od Lucernu",tm:"2h 30 min",
   d:`Hora vo výške 2 132 m n. m. dostupná najstrmejšou ozubnicovou železnicou sveta (48% stúpanie) ponúka panorámu 73 alpských štítov. V apríli jazdí len lanovka z Kriens (nie ozubnicová, tá je otvorená od mája). Vrchol má skalnú terasu, hotel a v jasný deň výhľad od Jungfrau po Čierny les. Kombinácia lanovky a gondoly je okrúhla trasa.`}
 ]},
-// ── DEŇ 13 ────────────────────────────────────────────────────────────────
+// ── DEŇ 13 · 12.4. ────────────────────────────────────────────────────────
 {date:"12.4.",day:"Nedeľa",prog:"Cesta domov, obed v Mníchov / Salzburg",route:"Lucern → BA",t:"8:12",tn:"9:30",acc:"Domov 🏠",seg:"tr",cx:[47.97,12.32],cz:8,places:[
  {n:"Marienplatz München",w:"Marienplatz, Munich",t:"c",la:48.1374,lo:11.5754,x:"zastávka na trase z Lucernu",tm:"30 min",
   d:`Srdce Mníchova s Neues Rathaus a slávnou zvonkohrou spúšťanou každý deň o 11:00 a 12:00 (a v lete aj o 17:00). Pohyblivé figúry na zvonohre predvedú rytiersky turnaj z roku 1568 za 12 minút. Priľahlá Frauenkirche s dvojitými cibuľovými vežami je symbolom Bavorska. Námestie je vždy plné, ale odtiaľ pár krokov je pokojnejší Viktualienmarkt.`},
@@ -444,13 +454,19 @@ function buildRows(){
   var tb=document.getElementById('tb'),html='';
   for(var i=0;i<days.length;i++){
     var d=days[i],s=d.seg;
-    html+='<tr class="dr r-'+s+'">';
+    // data row – click whole row to toggle
+    html+='<tr class="dr r-'+s+'" onclick="tog('+i+')" id="row'+i+'">';
     html+='<td class="seg-td"><div class="c-'+s+'" style="width:5px;min-height:38px;height:100%"></div></td>';
-    html+='<td class="dc">'+d.date+'</td><td class="dy">'+d.day+'</td>';
-    html+='<td class="pc">'+d.prog+'</td><td class="rc">'+d.route+'</td>';
-    html+='<td class="tc">'+d.t+'</td><td class="tc">'+d.tn+'</td>';
+    html+='<td class="dc">'+d.date+'</td>';
+    html+='<td class="dy">'+d.day+'</td>';
+    html+='<td class="pc">'+d.prog+'</td>';
+    html+='<td class="rc">'+d.route+'</td>';
+    html+='<td class="tc">'+d.t+'</td>';
+    html+='<td class="tc">'+d.tn+'</td>';
     html+='<td class="ac">'+d.acc+'</td>';
-    html+='<td><button class="tbtn" id="btn'+i+'" onclick="tog('+i+')">Tipy ▾</button></td></tr>';
+    html+='<td class="arr" id="arr'+i+'">▾</td>';
+    html+='</tr>';
+    // tips row
     html+='<tr><td colspan="9" class="tips-td"><div class="tips-wrap" id="tips'+i+'">';
     html+='<div class="mleg"><span><span class="mldot" style="background:#2b6cb0"></span>Mestská turistika</span><span><span class="mldot" style="background:#276749"></span>Príroda &amp; výhľady</span></div>';
     html+='<div class="map-box" id="map'+i+'"></div>';
@@ -476,24 +492,30 @@ function imgBlock(imgs,name){
   return '<div class="ig3"><img src="'+imgs[0]+'" alt="'+name+'" loading="lazy" '+err+'><img src="'+imgs[1]+'" alt="'+name+'" loading="lazy" '+err+'><img src="'+imgs[2]+'" alt="'+name+'" loading="lazy" '+err+'></div>';
 }
 function safeId(n){return btoa(unescape(encodeURIComponent(n))).replace(/[^a-zA-Z0-9]/g,'').slice(0,14);}
-function card(p,url){
+function card(p,url,skUrl){
   var dist=p.x?'<div class="pc-dist">⏱ '+p.x+'</div>':'';
   var tm=p.tm?'<div class="pc-time">🕐 min. '+p.tm+'</div>':'';
+  var sk=skUrl||('https://sk.wikipedia.org/w/index.php?search='+encodeURIComponent(p.n));
   return '<div class="pcard" id="c-'+safeId(p.n)+'"><div class="ig-ph shim" id="i-'+safeId(p.n)+'"></div>'+
     '<div class="pc-body"><div class="pc-name">'+p.n+'</div>'+dist+tm+
     '<div class="pc-desc">'+p.d+'</div>'+
-    '<a href="'+url+'" target="_blank" rel="noopener" class="pc-link">Viac info →</a></div></div>';
+    '<div class="pc-btns">'+
+    '<a href="'+url+'" target="_blank" rel="noopener" class="pc-link en" onclick="event.stopPropagation()">Wikipedia</a>'+
+    '<a href="'+sk+'" target="_blank" rel="noopener" class="pc-link sk" id="sk-'+safeId(p.n)+'" onclick="event.stopPropagation()">SK info</a>'+
+    '</div></div></div>';
 }
 function renderCards(i){
   var d=days[i];
   var city=d.places.filter(function(p){return p.t==='c';});
   var nat=d.places.filter(function(p){return p.t==='n';});
   var h='';
-  if(city.length){h+='<div class="sec-h sec-city">🏛️ Mestská turistika</div><div class="pgrid">';city.forEach(function(p){h+=card(p,wUrl(p.w));});h+='</div>';}
-  if(nat.length){h+='<div class="sec-h sec-nat">🌿 Príroda &amp; výhľady</div><div class="pgrid">';nat.forEach(function(p){h+=card(p,wUrl(p.w));});h+='</div>';}
+  var skFb=function(n){return 'https://sk.wikipedia.org/w/index.php?search='+encodeURIComponent(n);};
+  if(city.length){h+='<div class="sec-h sec-city">🏛️ Mestská turistika</div><div class="pgrid">';city.forEach(function(p){h+=card(p,wUrl(p.w),skFb(p.n));});h+='</div>';}
+  if(nat.length){h+='<div class="sec-h sec-nat">🌿 Príroda &amp; výhľady</div><div class="pgrid">';nat.forEach(function(p){h+=card(p,wUrl(p.w),skFb(p.n));});h+='</div>';}
   document.getElementById('cards'+i).innerHTML=h;
 }
-function updateUrl(p,url){var el=document.getElementById('c-'+safeId(p.n));if(el){var a=el.querySelector('.pc-link');if(a)a.href=url;}}
+function updateUrl(p,url){var el=document.getElementById('c-'+safeId(p.n));if(el){var a=el.querySelector('.pc-link.en');if(a)a.href=url;}}
+function updateSkUrl(p,skUrl){var el=document.getElementById('sk-'+safeId(p.n));if(el)el.href=skUrl;}
 function updateImg(p,imgs){var id='i-'+safeId(p.n);var el=document.getElementById(id);if(el)el.outerHTML=imgBlock(imgs,p.n);}
 
 // ── FETCH ─────────────────────────────────────────────────────────────────
@@ -504,6 +526,7 @@ async function loadDay(i){
   await Promise.all(d.places.map(function(p){
     return fetchPlace(p).then(function(data){
       updateUrl(p,data.url);
+      if(data.skUrl)updateSkUrl(p,data.skUrl);
       if(data.imgs&&data.imgs.length)updateImg(p,data.imgs);
     });
   }));
@@ -526,13 +549,15 @@ function initMap(i){
   maps[i]=m;
 }
 
-// ── TOGGLE ────────────────────────────────────────────────────────────────
+// ── TOGGLE (row click) ────────────────────────────────────────────────────
 function tog(i){
   var w=document.getElementById('tips'+i);
-  var b=document.getElementById('btn'+i);
+  var row=document.getElementById('row'+i);
+  var arr=document.getElementById('arr'+i);
   var o=w.classList.contains('open');
-  w.classList.toggle('open',!o);b.classList.toggle('open',!o);
-  b.textContent=o?'Tipy ▾':'Tipy ▴';
+  w.classList.toggle('open',!o);
+  row.classList.toggle('open',!o);
+  arr.textContent=o?'▾':'▴';
   if(!o){setTimeout(function(){initMap(i);},60);loadDay(i);}
 }
 

@@ -108,7 +108,7 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 <script>
 var maps={},loaded={};
 var WSUM='https://en.wikipedia.org/api/rest_v1/page/summary/';
-var WCOM='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=700&format=json&origin=*&gsrsearch=';
+var WCOM='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=1&prop=imageinfo&iiprop=url&iiurlwidth=700&format=json&origin=*&gsrsearch=';
 function wUrl(w){return 'https://en.wikipedia.org/wiki/'+encodeURIComponent(w.replace(/ /g,'_'));}
 function isPhoto(u){
   if(!u||!/\.(jpe?g|png)$/i.test(u))return false;
@@ -489,9 +489,7 @@ function shimmer(n){
 function imgBlock(imgs,name){
   var err='onerror="this.style.background=\'#e2e8f0\';this.removeAttribute(\'src\')"';
   if(!imgs||!imgs.length)return '<div class="ig-ph"></div>';
-  if(imgs.length===1)return '<div class="ig1"><img src="'+imgs[0]+'" alt="'+name+'" loading="lazy" '+err+'></div>';
-  if(imgs.length===2)return '<div class="ig2"><img src="'+imgs[0]+'" alt="'+name+'" loading="lazy" '+err+'><img src="'+imgs[1]+'" alt="'+name+'" loading="lazy" '+err+'></div>';
-  return '<div class="ig3"><img src="'+imgs[0]+'" alt="'+name+'" loading="lazy" '+err+'><img src="'+imgs[1]+'" alt="'+name+'" loading="lazy" '+err+'><img src="'+imgs[2]+'" alt="'+name+'" loading="lazy" '+err+'></div>';
+  return '<div class="ig1"><img src="'+imgs[0]+'" alt="'+name+'" loading="lazy" '+err+'></div>';
 }
 function safeId(n){return btoa(unescape(encodeURIComponent(n))).replace(/[^a-zA-Z0-9]/g,'').slice(0,14);}
 function card(p,url,skUrl){

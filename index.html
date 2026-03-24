@@ -46,7 +46,8 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .itin-must-item::before{content:'★  ';color:#d69e2e}
 .mci-city{color:#744210;font-weight:700}
 .itin-sched{display:flex;flex-direction:column}
-.itin-row{display:grid;grid-template-columns:50px 1fr;gap:8px;font-size:.79rem;color:#4a5568;line-height:1.45;padding:4px 0;border-bottom:1px solid #f0f4f8}
+.itin-rp{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:800;flex-shrink:0;margin-right:5px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);vertical-align:middle}
+.itin-row{display:grid;grid-template-columns:50px 20px 1fr;gap:6px;font-size:.79rem;color:#4a5568;line-height:1.45;padding:4px 0;border-bottom:1px solid #f0f4f8}
 .itin-row:last-child{border-bottom:none}
 .itin-time{font-weight:700;color:#2b6cb0;font-variant-numeric:tabular-nums}
 
@@ -79,6 +80,10 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .pc-link.sk{color:#276749;border:1px solid #c6f6d5}.pc-link.sk:hover{background:#f0fff4}
 .pc-link.gsk{color:#744210;border:1px solid #fbd38d}.pc-link.gsk:hover{background:#fffbeb}
 
+/* itinerár – dvojstĺpcové rozloženie */
+.itin-outer{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;align-items:stretch}
+.itin-imap{border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;min-height:300px}
+@media(max-width:800px){.itin-outer{grid-template-columns:1fr}.itin-imap{min-height:240px}}
 /* farby segmentov */
 .c-it{background:#5cb87a}.r-it{background:#f0fff4}
 .c-mo{background:#4fc3f7}.r-mo{background:#e8f7fe}
@@ -176,14 +181,14 @@ var itineraries=[
 {must:[
   {city:"Monaco",  name:"Palais Princier a katedrála",     desc:"sídlo kniežacej rodiny od 13. stor. a hrob Grace Kelly"},
   {city:"Èze",     name:"Stredoveká dedinka na útese",     desc:"výhľad 429 m nad morom na celú Riviéru"},
-  {city:"Antibes", name:"Vieil Antibes",                   desc:"stredoveké opevnené centrum s trhom a Musée Picasso"}],
- mustNames:["Palais Princier de Monaco","Èze","Antibes – Vieil Antibes"],
+  {city:"Monaco",  name:"Casino de Monte-Carlo",            desc:"ikonické kasíno z roku 1863 v štýle belle époque, symbol luxusu Monaka"}],
+ mustNames:["Palais Princier de Monaco","Èze","Casino de Monte-Carlo"],
  sched:[
   ["9:00",  "Odchod z Verony (trasa A4 – Milano – A10 – Janov)"],
   ["~11:00","Nabíjanie (Savona alebo Sanremo)"],
   ["~13:00","Príchod Monaco – obed pri Port Hercule"],
   ["14:00", "Palais Princier de Monaco, katedrála Notre-Dame-Immaculée",true],
-  ["15:00", "Casino de Monte-Carlo – exteriér, Place du Casino"],
+  ["15:00", "Casino de Monte-Carlo – exteriér, Place du Casino",true],
   ["15:45", "Odchod do Èze (15 min)"],
   ["16:00", "Èze – záhrada na útese, uličky, výhľad na Riviéru",true],
   ["17:00", "Odchod do Antibes (45 min)"],
@@ -290,7 +295,7 @@ var itineraries=[
   ["13:15", "Soľné polia Salins du Midi – flamingos z cesty (krátka zastávka)"],
   ["13:30", "Odchod do Carcassonne (2h 30 min)"],
   ["16:00", "Príchod, check-in Carcassonne"],
-  ["16:30", "La Cité Carcassonne – bazilika Saint-Nazaire, prechádzka hradbami",true],
+  ["16:30", "La Cité Carcassonne – prvý pohľad, večerná prechádzka po hradbách",true],
   ["18:00", "Canal du Midi – večerná prechádzka pod platanmi"],
   ["19:30", "Večera vnútri La Cité alebo v Bastide Saint-Louis"]]},
 {must:[
@@ -378,23 +383,57 @@ var itineraries=[
   ["20:00", "Príchod domov do Bratislavy"]]}
 ];
 
+function findRpIdx(text,pts){
+  if(!pts)return 0;
+  var t=text.toLowerCase();
+  for(var j=0;j<pts.length;j++){
+    var words=pts[j].n.toLowerCase().split(/[\s\-–]+/).filter(function(w){return w.length>3;});
+    for(var k=0;k<words.length;k++){if(t.indexOf(words[k])>=0)return j+1;}
+  }
+  return 0;
+}
+function sameCoords(a,b){return Math.abs(a.la-b.la)<0.01&&Math.abs(a.lo-b.lo)<0.01;}
 function buildItinHtml(i){
   var it=itineraries[i];
   if(!it)return '';
-  var h='<div class="itin-box">';
-  h+='<div class="itin-must-h">&#11088; MUST-SEE</div><div class="itin-must">';
+  var left='<div class="itin-box">';
+  left+='<div class="itin-must-h">&#11088; MUST-SEE</div><div class="itin-must">';
   for(var m=0;m<it.must.length;m++){
     var mi=it.must[m];
-    h+='<div class="itin-must-item"><span class="mci-city">'+mi.city+'</span> &ndash; <b>'+mi.name+'</b> &ndash; '+mi.desc+'</div>';
+    left+='<div class="itin-must-item"><span class="mci-city">'+mi.city+'</span> &ndash; <b>'+mi.name+'</b> &ndash; '+mi.desc+'</div>';
   }
-  h+='</div><div class="itin-sched-h">&#128197; Navrhovaný itinerár</div><div class="itin-sched">';
+  var pts=routePts[i]||[];
+  var lastPtIdx=pts.length-1;
+  var loop=pts.length>1&&sameCoords(pts[0],pts[lastPtIdx]);
+  // pre-compute badge index for each sched row
+  var badges=[];
+  for(var s=0;s<it.sched.length;s++) badges.push(findRpIdx(it.sched[s][1],pts));
+  if(loop){
+    // first occurrence of base match → 1 (already correct)
+    // last occurrence → N (last pt index)
+    var hits=[];
+    for(var s=0;s<badges.length;s++){if(badges[s]===1)hits.push(s);}
+    if(hits.length>=2) badges[hits[hits.length-1]]=pts.length;
+  }
+  left+='</div><div class="itin-sched-h">&#128197; Navrhovaný itinerár</div><div class="itin-sched">';
   for(var s=0;s<it.sched.length;s++){
     var row=it.sched[s];
     var txt=row[2]?'<b>'+row[1]+'</b>':row[1];
-    h+='<div class="itin-row"><span class="itin-time">'+row[0]+'</span><span>'+txt+'</span></div>';
+    var rpIdx=badges[s];
+    var badge='';
+    if(rpIdx>0){
+      var isF=(rpIdx===1),isL=(rpIdx===lastPtIdx+1);
+      var bg=isF?'#276749':isL?'#c53030':'#e2b44b';
+      var fc=(isF||isL)?'#fff':'#1a202c';
+      badge='<span class="itin-rp" style="background:'+bg+';color:'+fc+'">'+rpIdx+'</span>';
+    } else {
+      badge='<span style="width:20px;flex-shrink:0;display:inline-block"></span>';
+    }
+    left+='<div class="itin-row"><span class="itin-time">'+row[0]+'</span>'+badge+'<span>'+txt+'</span></div>';
   }
-  h+='</div></div>';
-  return h;
+  left+='</div></div>';
+  var right='<div class="itin-imap" id="imap'+i+'"></div>';
+  return '<div class="itin-outer">'+left+right+'</div>';
 }
 
 // ── DAYS ──────────────────────────────────────────────────────────────────
@@ -567,7 +606,7 @@ var days=[
  {n:"Montpellier",w:"Montpellier",t:"c",la:43.6083,lo:3.8790,x:"po ceste Nîmes → Carcassonne",tm:"1h",
   d:`Živá Place de la Comédie a historické centrum s jednou z najstarších európskych lekárskych fakúlt (1220) je ideálne na obed po ceste. Tram mesta sa prelína s pestrým študentským životom a arkádovými ulicami starého mesta. Promenáda okolo námestia je plná kaviarní. Ľahká zastávka na 1 hodinu.`},
  {n:"Carcassonne",w:"Carcassonne",t:"c",la:43.2072,lo:2.3647,x:"cieľ dňa",tm:"2h",
-  d:`Opevnené mesto UNESCO s 3 km dlhými dvojitými hradbami a 52 vežami je najlepšie zachovanou stredovekou citadelou Európy. Château Comtal vo vnútri a románska bazilika Saint-Nazaire s gotickými vitrážami sú absolútne vrcholy. Dolné mesto Bastide Saint-Louis je menej turistické a autentickejšie. Večerná prehliadka La Cité vo svetlách je neopísateľná.`},
+  d:`Opevnené mesto UNESCO s 3 km dlhými dvojitými hradbami a 52 vežami je najlepšie zachovanou stredovekou citadelou Európy. Dvojitý prsteň hradieb si môžete obísť pri lampách hneď po príchode. Dolné mesto Bastide Saint-Louis je menej turistické a autentickejšie. Večerná prehliadka La Cité vo svetlách je neopísateľná.`},
  {n:"Camargue pri Aigues-Mortes",w:"Camargue",t:"n",la:43.5200,lo:4.1500,x:"pri zastávke v Aigues-Mortes",tm:"30 min",
   d:`Priamo za hradbami Aigues-Mortes sa rozkladajú soľné polia Salins du Midi s flamingami viditeľnými z cesty. Flamingos sa tu vyskytujú po celý rok, v apríli v tisícoch. Cesta D979 pozdĺž soľných paniev je krátka vyhliadková odbočka. Vstup do soľných polí nie je nutný – stačí zastaviť pri ceste.`},
  {n:"Étang de Thau",w:"Étang de Thau",t:"n",la:43.4100,lo:3.6400,x:"po ceste Nîmes → Carcassonne",tm:"20 min",
@@ -819,6 +858,55 @@ function initMap(i){
 }
 
 // ── TOGGLE ────────────────────────────────────────────────────────────────
+var routePts=[
+ [{n:"Bratislava",la:48.1486,lo:17.1077},{n:"Sirmione – zastávka",la:45.4906,lo:10.6094},{n:"Verona",la:45.4393,lo:10.9940}],
+ [{n:"Verona",la:45.4393,lo:10.9940},{n:"Monaco",la:43.7374,lo:7.4238},{n:"Èze",la:43.7271,lo:7.3619},{n:"Antibes",la:43.5804,lo:7.1233}],
+ [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Saint-Paul-de-Vence",la:43.6967,lo:7.1203},{n:"Grasse",la:43.6592,lo:6.9258},{n:"Nice",la:43.6954,lo:7.2662},{n:"Villefranche-sur-Mer",la:43.7055,lo:7.3106},{n:"Antibes",la:43.5804,lo:7.1233}],
+ [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Saint-Tropez",la:43.2723,lo:6.6398},{n:"Port Grimaud",la:43.2729,lo:6.5797},{n:"Cannes",la:43.5528,lo:7.0274},{n:"Antibes",la:43.5804,lo:7.1233}],
+ [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Marseille",la:43.2965,lo:5.3698},{n:"Pont du Gard",la:43.9474,lo:4.5355},{n:"Avignon",la:43.9493,lo:4.8055}],
+ [{n:"Avignon",la:43.9493,lo:4.8055},{n:"Arles",la:43.6773,lo:4.6302},{n:"Les Baux-de-Provence",la:43.7443,lo:4.7927},{n:"Saintes-Maries-de-la-Mer",la:43.4540,lo:4.4272},{n:"Avignon",la:43.9493,lo:4.8055}],
+ [{n:"Avignon",la:43.9493,lo:4.8055},{n:"Pont du Gard",la:43.9474,lo:4.5355},{n:"Uzès",la:44.0126,lo:4.4198},{n:"Gordes",la:43.9116,lo:5.1994},{n:"Abbaye de Sénanque",la:43.9256,lo:5.1848},{n:"Avignon",la:43.9493,lo:4.8055}],
+ [{n:"Avignon",la:43.9493,lo:4.8055},{n:"Pont du Gard",la:43.9474,lo:4.5355},{n:"Nîmes",la:43.8363,lo:4.3602},{n:"Aigues-Mortes",la:43.5664,lo:4.1927},{n:"Montpellier",la:43.6083,lo:3.8790},{n:"Carcassonne",la:43.2072,lo:2.3647}],
+ [{n:"Carcassonne",la:43.2072,lo:2.3647},{n:"Mirepoix",la:43.0905,lo:1.8730},{n:"Foix",la:42.9640,lo:1.6052},{n:"Carcassonne",la:43.2072,lo:2.3647}],
+ [{n:"Carcassonne",la:43.2127,lo:2.3538},{n:"Lyon – Vieux Lyon",la:45.7602,lo:4.8267},{n:"Bourg-en-Bresse",la:46.2050,lo:5.2256},{n:"Ženeva",la:46.2044,lo:6.1432}],
+ [{n:"Ženeva",la:46.2044,lo:6.1432},{n:"Lausanne",la:46.5231,lo:6.6331},{n:"Murten",la:46.9276,lo:7.1154},{n:"Bern",la:46.9480,lo:7.4474}],
+ [{n:"Bern",la:46.9480,lo:7.4474},{n:"Lauterbrunnen",la:46.5938,lo:7.9081},{n:"Andermatt",la:46.6344,lo:8.5941},{n:"Gotthardský priesmyk",la:46.5550,lo:8.5640},{n:"Lucern",la:47.0502,lo:8.3093}],
+ [{n:"Lucern",la:47.0502,lo:8.3093},{n:"Mníchov",la:48.1374,lo:11.5754},{n:"Salzburg",la:47.7988,lo:13.0460},{n:"Bratislava",la:48.1486,lo:17.1077}]
+];
+var routeMaps={};
+function initItinMap(i){
+  if(routeMaps[i]){routeMaps[i].invalidateSize();return;}
+  var pts=routePts[i];
+  if(!pts||!pts.length)return;
+  var lls=pts.map(function(p){return[p.la,p.lo];});
+  var lastIdx=pts.length-1;
+  var loop=pts.length>1&&sameCoords(pts[0],pts[lastIdx]);
+  var m=L.map('imap'+i,{scrollWheelZoom:false,attributionControl:false,zoomControl:true});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19}).addTo(m);
+  L.polyline(lls,{color:'#c47f00',weight:3,opacity:.85}).addTo(m);
+  var loop=pts.length>1&&sameCoords(pts[0],pts[lastIdx]);
+  pts.forEach(function(p,idx){
+    var isFirst=(idx===0),isLast=(idx===lastIdx);
+    if(loop&&isFirst){
+      // combined start+end pill marker
+      var n=pts.length;
+      var html='<div style="display:flex;border-radius:12px;overflow:hidden;border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.55)">'
+        +'<div style="width:22px;height:24px;background:#276749;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">1</div>'
+        +'<div style="width:22px;height:24px;background:#c53030;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center">'+n+'</div>'
+        +'</div>';
+      var icon=L.divIcon({className:'',html:html,iconSize:[48,24],iconAnchor:[24,12],popupAnchor:[0,-13]});
+      L.marker([p.la,p.lo],{icon:icon,zIndexOffset:1000}).addTo(m).bindPopup('<b>1. '+p.n+'</b> (štart &amp; cieľ)');
+      return;
+    }
+    if(loop&&isLast) return; // skip – handled above
+    var bg=isFirst?'#276749':isLast?'#c53030':'#e2b44b';
+    var fc=(isFirst||isLast)?'#fff':'#1a202c';
+    var icon=L.divIcon({className:'',html:'<div style="width:24px;height:24px;border-radius:50%;background:'+bg+';border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.55);font-size:11px;font-weight:800;color:'+fc+';display:flex;align-items:center;justify-content:center">'+(idx+1)+'</div>',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-13]});
+    L.marker([p.la,p.lo],{icon:icon,zIndexOffset:(isFirst||isLast)?500:0}).addTo(m).bindPopup('<b>'+(idx+1)+'. '+p.n+'</b>');
+  });
+  m.fitBounds(L.latLngBounds(lls),{padding:[18,18]});
+  routeMaps[i]=m;
+}
 function tog(i){
   var w=document.getElementById('tips'+i);
   var row=document.getElementById('row'+i);
@@ -827,7 +915,7 @@ function tog(i){
   w.classList.toggle('open',!o);
   row.classList.toggle('open',!o);
   arr.textContent=o?'▾':'▴';
-  if(!o){setTimeout(function(){initMap(i);},60);loadDay(i);}
+  if(!o){setTimeout(function(){initMap(i);initItinMap(i);},60);loadDay(i);}
 }
 
 buildRows();

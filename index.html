@@ -872,17 +872,33 @@ async function fetchRouteDist(i){
   }catch(e){}
   return dayFallbackKm[i]||null;
 }
+// hotel addresses for GMaps origin/destination
+var dayEndpoints=[
+  {o:"Záhorská Bystrica, Bratislava, Slovakia",                          d:"Hotel Palace Verona, Via Galvani 9, Verona, Italy"},
+  {o:"Hotel Palace Verona, Via Galvani 9, Verona, Italy",                d:"Lagrange Apart'Hotel Antibes Olympie, Route de Nice, Antibes, France"},
+  {o:"Lagrange Apart'Hotel Antibes Olympie, Antibes, France",            d:"Lagrange Apart'Hotel Antibes Olympie, Antibes, France"},
+  {o:"Lagrange Apart'Hotel Antibes Olympie, Antibes, France",            d:"Lagrange Apart'Hotel Antibes Olympie, Antibes, France"},
+  {o:"Lagrange Apart'Hotel Antibes Olympie, Antibes, France",            d:"face au Palais des Papes, Place du Palais, Avignon, France"},
+  {o:"face au Palais des Papes, Place du Palais, Avignon, France",       d:"face au Palais des Papes, Place du Palais, Avignon, France"},
+  {o:"face au Palais des Papes, Place du Palais, Avignon, France",       d:"face au Palais des Papes, Place du Palais, Avignon, France"},
+  {o:"face au Palais des Papes, Place du Palais, Avignon, France",       d:"Hotel Montmorency Spa, Carcassonne, France"},
+  {o:"Hotel Montmorency Spa, Carcassonne, France",                       d:"Hotel Montmorency Spa, Carcassonne, France"},
+  {o:"Hotel Montmorency Spa, Carcassonne, France",                       d:"Auteuil Manotel, 33 Rue de Lausanne, Geneva, Switzerland"},
+  {o:"Auteuil Manotel, 33 Rue de Lausanne, Geneva, Switzerland",         d:"Hotel Ambassador Bern, Seftigenstrasse 99, Bern, Switzerland"},
+  {o:"Hotel Ambassador Bern, Seftigenstrasse 99, Bern, Switzerland",     d:"Tailormade Hotel Krone, Brünigstrasse 2, Sarnen, Switzerland"},
+  {o:"Tailormade Hotel Krone, Brünigstrasse 2, Sarnen, Switzerland",     d:"Záhorská Bystrica, Bratislava, Slovakia"}
+];
 function buildGMapsUrl(i){
   var pts=routePts[i];
   if(!pts||pts.length<2)return '';
-  var origin=pts[0].la+','+pts[0].lo;
-  var destination=pts[pts.length-1].la+','+pts[pts.length-1].lo;
-  var waypoints=pts.slice(1,-1).map(function(p){return p.la+','+p.lo;}).join('|');
+  var ep=dayEndpoints[i];
   var url='https://www.google.com/maps/dir/?api=1'
-    +'&origin='+encodeURIComponent(origin)
-    +'&destination='+encodeURIComponent(destination)
+    +'&origin='+encodeURIComponent(ep.o)
+    +'&destination='+encodeURIComponent(ep.d)
     +'&travelmode=driving';
-  if(waypoints) url+='&waypoints='+encodeURIComponent(waypoints);
+  // middle waypoints from routePts (skip first and last – those are hotels)
+  var wps=pts.slice(1,-1).map(function(p){return p.la+','+p.lo;}).join('|');
+  if(wps) url+='&waypoints='+encodeURIComponent(wps);
   return url;
 }
 

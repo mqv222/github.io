@@ -95,17 +95,13 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 @media(max-width:600px){.pgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:380px){.pgrid{grid-template-columns:1fr}}
 @media(max-width:768px){
-  .tips-wrap, .tips-wrap *{font-size:11px!important;line-height:1.4!important}
-  .itin-time{color:#2b6cb0!important;font-weight:700!important}
-  .itin-must-h,.itin-sched-h,.book-block-h,.sec-h{font-size:10px!important;letter-spacing:.05em!important}
-  .pc-name{font-weight:700!important}
+  .tips-wrap{
+    zoom:0.72;
+    -webkit-text-size-adjust:none;
+    text-size-adjust:none;
+  }
   .itin-outer{grid-template-columns:1fr!important}
   .itin-imap{min-height:200px!important}
-  .itin-row{display:grid!important;grid-template-columns:44px 22px 1fr!important}
-  .itin-rp{width:16px!important;height:16px!important}
-  .pc-ltr{font-size:11px!important;width:20px!important;height:20px!important}
-  .gmaps-btn{padding:5px 10px!important}
-  .book-item{padding:3px 0!important}
 }
 /* Easter warning */
 .easter-badge{display:inline-block;background:#c53030;color:#fff;font-size:.63rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;letter-spacing:.02em}
@@ -985,6 +981,6 @@ function loadAllKm(cb){
 buildRows();
 loadAllKm();
 </script>
-<div style="text-align:center;padding:18px 0 10px;font-size:.72rem;color:#a0aec0;letter-spacing:.06em">v1.1</div>
+<div style="text-align:center;padding:18px 0 10px;font-size:.72rem;color:#a0aec0;letter-spacing:.06em">v1.2</div>
 </body>
 </html>

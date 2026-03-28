@@ -30,7 +30,10 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .rc{white-space:nowrap;color:#555;font-size:.79rem}
 .tc{white-space:nowrap;text-align:center;font-variant-numeric:tabular-nums}
 .km-cell{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-size:.78rem;color:#2b6cb0;font-weight:600;padding-right:14px!important}
-.km-total{font-size:.82rem;opacity:.85;margin-top:6px}
+.km-total{font-size:.82rem;opacity:.85;margin-top:6px;display:flex;align-items:center;gap:0}
+.refresh-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);color:#fff;font-size:.7rem;font-weight:700;padding:4px 11px;border-radius:7px;border:1.5px solid rgba(255,255,255,.4);cursor:pointer;transition:background .15s;margin-left:12px;vertical-align:middle}
+.refresh-btn:hover{background:rgba(255,255,255,.28)}
+.refresh-btn.loading{opacity:.55;pointer-events:none}
 .ac{font-weight:600;font-size:.81rem;white-space:nowrap}
 .arr{text-align:center;font-size:.85rem;color:#a0aec0;width:26px;white-space:nowrap;transition:color .15s}
 .dr:hover .arr,.dr.open .arr{color:#2b6cb0}
@@ -116,7 +119,7 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 <div class="hdr">
   <h1>🚗 Road Trip 2026 · IT · FRA · SUI</h1>
   <div class="sub">Bratislava → Verona → Sirmione → Monaco → Antibes → Nice → Cannes → St. Tropez → Marseille → Avignon → Arles → Carcassonne → Lyon → Ženeva → Lausanne → Bern → Lauterbrunnen → Lucern → BA</div>
-  <div class="km-total" id="hdr-km">🚗 Celková vzdialenosť: počítam…</div>
+  <div class="km-total"><span id="hdr-km">🚗 Celková vzdialenosť: počítam…</span><button class="refresh-btn" id="refresh-btn" onclick="refreshAllKm()">🔄 Refresh km</button></div>
 </div>
 <div class="legend">
   <span class="leg"><span class="ldot c-it"></span>Taliansko</span>
@@ -934,7 +937,21 @@ function tog(i){
 }
 // fetch all km on page load and populate table + header total
 var routeKmCache=new Array(days.length).fill(null);
-function loadAllKm(){
+function refreshAllKm(){
+  var btn=document.getElementById('refresh-btn');
+  if(btn){btn.classList.add('loading');btn.textContent='⏳ Načítavam…';}
+  routeKmCache=new Array(days.length).fill(null);
+  var hdr=document.getElementById('hdr-km');
+  if(hdr) hdr.textContent='🚗 Celková vzdialenosť: počítam…';
+  for(var i=0;i<days.length;i++){
+    var el=document.getElementById('km-'+i);if(el) el.textContent='…';
+    var rowEl=document.getElementById('km-row-'+i);if(rowEl) rowEl.textContent='…';
+  }
+  loadAllKm(function(){
+    if(btn){btn.classList.remove('loading');btn.textContent='🔄 Refresh km';}
+  });
+}
+function loadAllKm(cb){
   var promises=routePts.map(function(pts,i){
     return fetchRouteDist(i).then(function(km){
       routeKmCache[i]=km;
@@ -948,6 +965,7 @@ function loadAllKm(){
     var total=routeKmCache.reduce(function(s,v){return s+(v||0);},0);
     var hdr=document.getElementById('hdr-km');
     if(hdr) hdr.textContent='🚗 Celková vzdialenosť tripu: '+total.toLocaleString('sk-SK')+' km';
+    if(cb) cb();
   });
 }
 

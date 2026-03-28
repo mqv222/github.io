@@ -29,6 +29,8 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .pc{font-weight:500;line-height:1.4;min-width:200px}
 .rc{white-space:nowrap;color:#555;font-size:.79rem}
 .tc{white-space:nowrap;text-align:center;font-variant-numeric:tabular-nums}
+.km-cell{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-size:.78rem;color:#2b6cb0;font-weight:600;padding-right:14px!important}
+.km-total{font-size:.82rem;opacity:.85;margin-top:6px}
 .ac{font-weight:600;font-size:.81rem;white-space:nowrap}
 .arr{text-align:center;font-size:.85rem;color:#a0aec0;width:26px;white-space:nowrap;transition:color .15s}
 .dr:hover .arr,.dr.open .arr{color:#2b6cb0}
@@ -89,6 +91,24 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 .c-tr{background:#90a4ae}.r-tr{background:#f7f9fb}
 @media(max-width:600px){.pgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:380px){.pgrid{grid-template-columns:1fr}}
+/* Easter warning */
+.easter-badge{display:inline-block;background:#c53030;color:#fff;font-size:.63rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;letter-spacing:.02em}
+.easter-day td{box-shadow:inset 3px 0 0 #c53030}
+/* Google Maps button */
+.gmaps-btn{display:inline-flex;align-items:center;gap:6px;background:#4285f4;color:#fff;font-size:.72rem;font-weight:700;padding:6px 14px;border-radius:8px;text-decoration:none;margin-bottom:12px;transition:background .15s;box-shadow:0 2px 6px rgba(66,133,244,.3)}
+.gmaps-btn:hover{background:#2b6fd9}
+/* Day stats bar */
+.day-stats-bar{display:flex;gap:16px;flex-wrap:wrap;font-size:.73rem;padding:8px 14px;background:#f7f9fb;border-radius:8px;margin-bottom:14px;align-items:center;border:1px solid #e2e8f0}
+.day-stats-bar .ds{display:flex;align-items:center;gap:4px;font-weight:600;color:#2d3748}
+.day-stats-bar .ds em{color:#718096;font-weight:400;font-style:normal;margin-left:1px}
+/* Pre-booking block */
+.book-block{background:#fff8f0;border:1.5px solid #f6ad55;border-radius:10px;padding:10px 14px;margin-bottom:14px}
+.book-block-h{font-size:.71rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#c05621;margin-bottom:8px}
+.book-item{font-size:.79rem;color:#744210;padding:3px 0;line-height:1.45}
+.book-link{color:#c05621;font-weight:700;text-decoration:none;font-size:.71rem;border:1px solid #f6ad55;padding:1px 6px;border-radius:4px;margin-left:4px}
+.book-link:hover{background:#fff3e0}
+/* Sunset tag */
+.sunset-tag{display:inline-block;background:#ed8936;color:#fff;font-size:.61rem;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -96,6 +116,7 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 <div class="hdr">
   <h1>🚗 Road Trip 2026 · IT · FRA · SUI</h1>
   <div class="sub">Bratislava → Verona → Sirmione → Monaco → Antibes → Nice → Cannes → St. Tropez → Marseille → Avignon → Arles → Carcassonne → Lyon → Ženeva → Lausanne → Bern → Lauterbrunnen → Lucern → BA</div>
+  <div class="km-total" id="hdr-km">🚗 Celková vzdialenosť: počítam…</div>
 </div>
 <div class="legend">
   <span class="leg"><span class="ldot c-it"></span>Taliansko</span>
@@ -110,7 +131,7 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 <table>
 <thead><tr>
   <th style="width:5px"></th>
-  <th>Dátum</th><th>Deň</th><th>Program</th><th>Cesta</th>
+  <th>Dátum</th><th>Deň</th><th>Program</th><th>Cesta</th><th>KM</th>
   <th>Čas</th><th>+nabíj.</th><th>Ubytovanie</th><th></th>
 </tr></thead>
 <tbody id="tb"></tbody>
@@ -382,7 +403,8 @@ sched:[
   ["16:15","Lucern 5 – Kapellbrücke – drevený most, obrazy, Wasserturm",true,["C"]],
   ["17:00","Lucern 5 – Altstadt – Löwendenkmal, Kornmarkt, hradobné veže",false,["D"]],
   ["18:15","Lucern 5 – nábrežie jazera – západ slnka",false,["H"]],
-  ["20:00","Lucern 5 – večera"]]},
+  ["20:00","Lucern 5 – večera v centre"],
+  ["21:00","Sarnen 6 – Hotel KRONE (15 min od Lucernu – nocľah)"]]},
 // 12 – 12.4. Nedeľa  routePts: Lucern(1) Mníchov(2) Salzburg(3) Bratislava(4)
 {must:[
   {city:"Mníchov",name:"Marienplatz a Viktualienmarkt",desc:"zvonkohra Neues Rathaus o 12:00 a bavorský trh – ⚠️ trh v Ne ZATVORENÝ"},
@@ -535,7 +557,7 @@ var days=[
  {ltr:"K",n:"Lake Murten",w:"Lake Murten",t:"n",la:46.9300,lo:7.1000,x:"35 min od Bernu",tm:"30 min",d:`Pokojné jazierko pri Murtene s výhľadmi na Alpskú panorámu. Promenáda pozdĺž brehu je relaxačná. Bezplatné parkovanie pri brehu.`},
  {ltr:"L",n:"Gurten",w:"Gurten (mountain)",t:"n",la:46.9092,lo:7.4392,x:"20 min od Bernu (lanovka)",tm:"1h",hours:"Lanovka: 7:30–23:30 denne (~7 CHF)",website:"https://www.gurtenpark.ch",d:`Bernský výletný kopec vo výške 858 m s panorámou Álp od Jungfrau po Stockhorn. Dosažiteľný lanovkou z Wabern. V apríli sú ešte zvyšky snehu na vrchole.`}
 ]},
-{date:"11.4.",day:"Sobota",prog:"Presun cez Lauterbrunnen a Gotthardpass do Lucern",route:"Bern → Lauterbrunnen → Gotthard → Lucern",t:"4:25",tn:"4:30",acc:"Lucern",seg:"sw",cx:[46.82,8.11],cz:8,places:[
+{date:"11.4.",day:"Sobota",prog:"Lauterbrunnen, Gotthard, Lucern → Hotel KRONE Sarnen",route:"Bern → Lauterbrunnen → Gotthard → Lucern → Sarnen",t:"4:25",tn:"4:30",acc:"Sarnen",seg:"sw",cx:[46.82,8.11],cz:8,places:[
  {ltr:"A",n:"Lauterbrunnen",w:"Lauterbrunnen",t:"c",la:46.5938,lo:7.9081,x:"zastávka na trase z Bernu",tm:"45 min",d:`Dedinka v úzkom údolí ohradenom 300 m skalnými stenami – dejisko 72 vodopádov. Tolkien sa tu inšpiroval pri vytváraní Rivendellu. V apríli sú vodopády v plnom jarnom prietoku.`},
  {ltr:"B",n:"Andermatt",w:"Andermatt",t:"c",la:46.6344,lo:8.5941,x:"pri Gotthardskom priesmyku",tm:"20 min",d:`Tradičná horská dedinka vo výške 1 444 m n. m. si zachovala alpský charakter. Je tu aj múzeum Gotthardskej pevnostnej línie z 2. sv. vojny. Zastavte sa na kávu.`},
  {ltr:"C",n:"Kapellbrücke",w:"Chapel Bridge",t:"c",la:47.0519,lo:8.3062,x:"v Lucerne",tm:"20 min",hours:"Most: 24/7 (zadarmo)",d:`Najstarší krytý drevený most Európy z roku 1333 je ikonou Lucernu. Pod strechou sú zavesené 17. storočné obrazy dejín Lucernu. Pohľad na most pri rannom svetle je jedným z najfotografovanejších záberov Švajčiarska.`},
@@ -562,19 +584,19 @@ var days=[
 
 // ── BASES ────────────────────────────────────────────────────────────────
 var bases=[
-  [{n:"Bratislava – odjazd",la:48.1486,lo:17.1077},{n:"Sirmione – zastávka",la:45.4906,lo:10.6094},{n:"Verona – ubytovanie",la:45.4393,lo:10.9916}],
+  [{n:"Záhorská Bystrica – odjazd",la:48.2284,lo:17.0258},{n:"Sirmione – zastávka",la:45.4906,lo:10.6094},{n:"Verona – ubytovanie",la:45.4393,lo:10.9916}],
   [{n:"Verona – odjazd",la:45.4393,lo:10.9916},{n:"Antibes – ubytovanie",la:43.5804,lo:7.1233}],
   [{n:"Antibes – základňa",la:43.5804,lo:7.1233}],
   [{n:"Antibes – základňa",la:43.5804,lo:7.1233}],
-  [{n:"Antibes – odjazd",la:43.5804,lo:7.1233},{n:"Avignon – ubytovanie",la:43.9493,lo:4.8055}],
-  [{n:"Avignon – základňa",la:43.9493,lo:4.8055}],
-  [{n:"Avignon – základňa",la:43.9493,lo:4.8055}],
-  [{n:"Avignon – odjazd",la:43.9493,lo:4.8055},{n:"Carcassonne – ubytovanie",la:43.2127,lo:2.3538}],
-  [{n:"Carcassonne – základňa",la:43.2127,lo:2.3538}],
-  [{n:"Carcassonne – odjazd",la:43.2127,lo:2.3538},{n:"Ženeva – ubytovanie",la:46.2044,lo:6.1432}],
-  [{n:"Ženeva – odjazd",la:46.2044,lo:6.1432},{n:"Bern – ubytovanie",la:46.9480,lo:7.4474}],
-  [{n:"Bern – odjazd",la:46.9480,lo:7.4474},{n:"Lucern – ubytovanie",la:47.0502,lo:8.3093}],
-  [{n:"Lucern – odjazd",la:47.0502,lo:8.3093},{n:"Bratislava – domov",la:48.1486,lo:17.1077}]
+  [{n:"Antibes – odjazd",la:43.5804,lo:7.1233},{n:"face au Palais des Papes – Avignon",la:43.9514,lo:4.8071}],
+  [{n:"face au Palais des Papes – základňa",la:43.9514,lo:4.8071}],
+  [{n:"face au Palais des Papes – základňa",la:43.9514,lo:4.8071}],
+  [{n:"face au Palais des Papes – odjazd",la:43.9514,lo:4.8071},{n:"Hôtel Montmorency & Spa – Carcassonne",la:43.2127,lo:2.3538}],
+  [{n:"Hôtel Montmorency & Spa – základňa",la:43.2127,lo:2.3538}],
+  [{n:"Hôtel Montmorency & Spa – odjazd",la:43.2127,lo:2.3538},{n:"Auteuil Manotel – Ženeva",la:46.2044,lo:6.1432}],
+  [{n:"Auteuil Manotel – odjazd",la:46.2044,lo:6.1432},{n:"Hotel Ambassador – Bern",la:46.9480,lo:7.4474}],
+  [{n:"Hotel Ambassador – odjazd",la:46.9480,lo:7.4474},{n:"Hotel KRONE Sarnen",la:46.8978,lo:8.2008}],
+  [{n:"Hotel KRONE Sarnen – odjazd",la:46.8978,lo:8.2008},{n:"Záhorská Bystrica – domov",la:48.2284,lo:17.0258}]
 ];
 
 // ── TABLE ────────────────────────────────────────────────────────────────
@@ -582,14 +604,32 @@ function buildRows(){
   var tb=document.getElementById('tb'),html='';
   for(var i=0;i<days.length;i++){
     var d=days[i],s=d.seg;
+    var isEaster=(i>=5&&i<=7);
     html+='<tr class="dr r-'+s+'" onclick="tog('+i+')" id="row'+i+'">';
     html+='<td class="seg-td"><div class="c-'+s+'" style="width:5px;min-height:38px;height:100%"></div></td>';
     html+='<td class="dc">'+d.date+'</td><td class="dy">'+d.day+'</td>';
     html+='<td class="pc">'+d.prog+'</td><td class="rc">'+d.route+'</td>';
+    html+='<td class="km-cell" id="km-row-'+i+'">…</td>';
     html+='<td class="tc">'+d.t+'</td><td class="tc">'+d.tn+'</td>';
     html+='<td class="ac">'+d.acc+'</td>';
     html+='<td class="arr" id="arr'+i+'">▾</td></tr>';
-    html+='<tr><td colspan="9" class="tips-td"><div class="tips-wrap" id="tips'+i+'">';
+    html+='<tr><td colspan="10" class="tips-td"><div class="tips-wrap" id="tips'+i+'">';
+    // Google Maps button
+    var gmUrl=buildGMapsUrl(i);
+    if(gmUrl) html+='<a href="'+gmUrl+'" target="_blank" rel="noopener" class="gmaps-btn">🗺️ Otvoriť dennú trasu v Google Maps</a>';
+    // Bookings
+    var bk=bookings[i];
+    if(bk&&bk.length){
+      html+='<div class="book-block"><div class="book-block-h">📋 Rezervovať vopred</div>';
+      for(var b=0;b<bk.length;b++){
+        var bi=bk[b];
+        html+='<div class="book-item">📌 <b>'+bi.t+'</b>';
+        if(bi.n) html+=' – '+bi.n;
+        if(bi.u) html+='<a href="'+bi.u+'" target="_blank" rel="noopener" class="book-link">→ web</a>';
+        html+='</div>';
+      }
+      html+='</div>';
+    }
     html+=buildItinHtml(i);
     html+='<div class="mleg"><span><span class="mldot" style="background:#2b6cb0"></span>Mestská turistika</span>';
     html+='<span><span class="mldot" style="background:#276749"></span>Príroda &amp; výhľady</span>';
@@ -634,9 +674,13 @@ function buildItinHtml(i){
       circleHtml='<span style="display:inline-block;width:20px;flex-shrink:0"></span>';
       displayText=ltrHtml+(isMust?'<b>'+text+'</b>':text);
     }
+    var sunKey=i+'_'+s;
+    if(sunsetInfo[sunKey]) displayText+='<span class="sunset-tag">🌅 '+sunsetInfo[sunKey]+'</span>';
     left+='<div class="itin-row"><span class="itin-time">'+time+'</span>'+circleHtml+'<span>'+displayText+'</span></div>';
   }
-  left+='</div></div>';
+  left+='</div>'; // close itin-sched
+  left+='<div style="font-size:.75rem;color:#718096;margin-top:8px;padding-top:7px;border-top:1px solid #f0f4f8">🚗 Celkom najazdených: <b style="color:#2b6cb0" id="km-'+i+'">…</b> km</div>';
+  left+='</div>'; // close itin-box
   var right='<div class="itin-imap" id="imap'+i+'"></div>';
   return '<div class="itin-outer">'+left+right+'</div>';
 }
@@ -728,7 +772,7 @@ function initMap(i){
 
 // ── ROUTE POINTS ─────────────────────────────────────────────────────────
 var routePts=[
- [{n:"Bratislava",la:48.1486,lo:17.1077},{n:"Sirmione",la:45.4906,lo:10.6094},{n:"Verona",la:45.4393,lo:10.9940}],
+ [{n:"Záhorská Bystrica",la:48.2284,lo:17.0258},{n:"Sirmione",la:45.4906,lo:10.6094},{n:"Verona",la:45.4393,lo:10.9940}],
  [{n:"Verona",la:45.4393,lo:10.9940},{n:"Monaco",la:43.7374,lo:7.4238},{n:"Èze",la:43.7271,lo:7.3619},{n:"Antibes",la:43.5804,lo:7.1233}],
  [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Saint-Paul-de-Vence",la:43.6967,lo:7.1203},{n:"Grasse",la:43.6592,lo:6.9258},{n:"Nice",la:43.6954,lo:7.2662},{n:"Villefranche-sur-Mer",la:43.7055,lo:7.3106},{n:"Antibes",la:43.5804,lo:7.1233}],
  [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Saint-Tropez",la:43.2723,lo:6.6398},{n:"Port Grimaud",la:43.2729,lo:6.5797},{n:"Cannes",la:43.5528,lo:7.0274},{n:"Antibes",la:43.5804,lo:7.1233}],
@@ -739,8 +783,8 @@ var routePts=[
  [{n:"Carcassonne",la:43.2072,lo:2.3647},{n:"Mirepoix",la:43.0905,lo:1.8730},{n:"Foix",la:42.9640,lo:1.6052},{n:"Carcassonne",la:43.2072,lo:2.3647}],
  [{n:"Carcassonne",la:43.2127,lo:2.3538},{n:"Lyon",la:45.7602,lo:4.8267},{n:"Ženeva",la:46.2044,lo:6.1432}],
  [{n:"Ženeva",la:46.2044,lo:6.1432},{n:"Lausanne",la:46.5231,lo:6.6331},{n:"Murten",la:46.9276,lo:7.1154},{n:"Bern",la:46.9480,lo:7.4474}],
- [{n:"Bern",la:46.9480,lo:7.4474},{n:"Lauterbrunnen",la:46.5938,lo:7.9081},{n:"Andermatt",la:46.6344,lo:8.5941},{n:"Gotthardský priesmyk",la:46.5550,lo:8.5640},{n:"Lucern",la:47.0502,lo:8.3093}],
- [{n:"Lucern",la:47.0502,lo:8.3093},{n:"Mníchov",la:48.1374,lo:11.5754},{n:"Salzburg",la:47.7988,lo:13.0460},{n:"Bratislava",la:48.1486,lo:17.1077}]
+ [{n:"Bern",la:46.9480,lo:7.4474},{n:"Lauterbrunnen",la:46.5938,lo:7.9081},{n:"Andermatt",la:46.6344,lo:8.5941},{n:"Airolo",la:46.4721,lo:8.6089},{n:"Lucern",la:47.0502,lo:8.3093},{n:"Sarnen – Hotel KRONE",la:46.8978,lo:8.2008}],
+ [{n:"Sarnen – Hotel KRONE",la:46.8978,lo:8.2008},{n:"Mníchov",la:48.1374,lo:11.5754},{n:"Salzburg",la:47.7988,lo:13.0460},{n:"Záhorská Bystrica",la:48.2284,lo:17.0258}]
 ];
 
 // ── ITIN MAP ─────────────────────────────────────────────────────────────
@@ -776,6 +820,72 @@ function initItinMap(i){
   routeMaps[i]=m;
 }
 
+// ── EXTRA DATA ────────────────────────────────────────────────────────────
+var dayFallbackKm=[700,490,115,180,340,230,200,285,160,610,160,280,895];
+var dayStats=[
+  {km:700,eur:"15–20"},   // BA→Salzburg 330→Innsbruck 185→Brenner→Trento→Sirmione 155→Verona 40
+  {km:490,eur:"10–15"},   // Verona→Milan 160→Genoa 145→Monaco 165→Antibes 25
+  {km:115,eur:"20–36"},   // Antibes loop: →SPdV 18→Grasse 20→Nice 35→Villefranche 8→Antibes 32 (bez Chapelle Matisse)
+  {km:180,eur:"20–25"},   // Antibes loop: →St.Tropez 100→Port Grimaud 8→Cannes 55→Antibes 15
+  {km:340,eur:"10–15"},   // Antibes→Marseille 200→Pont du Gard 115→Avignon 25
+  {km:230,eur:"25–35"},   // Avignon loop: →Arles 35→Les Baux 25→Saintes-Maries 65→Avignon 105
+  {km:200,eur:"18–22"},   // Avignon loop: →PdGard 25→Uzès 15→Gordes/Sénanque 80→Roussillon 15→Avignon 65
+  {km:285,eur:"20–25"},   // Avignon→Nîmes 45→Aigues-Mortes 35→Salins 15→Carcassonne 190
+  {km:160,eur:"15–18"},   // Carcassonne loop: →Mirepoix 48→Foix 32→Carcassonne 80
+  {km:610,eur:"0–5"},     // Carcassonne→Lyon 455→Ženeva 155
+  {km:160,eur:"20–30 CHF"},// Ženeva→Lausanne 65→Murten 65→Bern 30
+  {km:280,eur:"12–15 CHF"},// Bern→Lauterbrunnen 65→Andermatt 110→Gotthard 15→Lucern 90
+  {km:895,eur:"15–20"}    // Lucern→Innsbruck 280→München 170→Salzburg 145→Bratislava 300
+];
+var bookings=[
+  [],
+  [],
+  [{t:"Chapelle Matisse, Vence",n:"otvorená LEN Ut a Št – skontrolovať termín vopred!",u:"https://www.chapellematisse.fr"}],
+  [{t:"Loď na Îles de Lérins (Cannes)",n:"odporúčaná rezervácia vopred (~18 €)",u:"https://www.trans-cote-azur.com"}],
+  [],
+  [{t:"Carrières de Lumières, Les Baux",n:"online rezervácia silne odporúčaná!",u:"https://www.carrieres-lumieres.com"},{t:"Arènes d'Arles",n:"online vstupenky vopred",u:"https://www.arenes-arles.com"}],
+  [{t:"Palais des Papes, Avignon",n:"online lístok odporúčaný (Veľkonočný pondelok = davy!)",u:"https://www.palais-des-papes.com"}],
+  [],
+  [{t:"Niaux Cave",n:"NUTNÁ rezervácia vopred – obmedzený počet miest!",u:"https://www.niaux.net"}],
+  [{t:"Lyonský bouchon",n:"rezervovať deň vopred – rýchlo sa vypredávajú!"}],
+  [],
+  [],
+  []
+];
+// key = "dayIdx_schedRowIdx"
+var sunsetInfo={
+  "0_6":"západ slnka ~19:55",
+  "2_8":"západ slnka ~20:00",
+  "10_9":"západ slnka ~20:17"
+};
+async function fetchRouteDist(i){
+  var pts=routePts[i];
+  if(!pts||pts.length<2)return dayFallbackKm[i]||null;
+  var coords=pts.map(function(p){return p.lo+','+p.la;}).join(';');
+  try{
+    var url='https://router.project-osrm.org/route/v1/driving/'+coords+'?overview=false&steps=false';
+    var r=await fetch(url);
+    var d=await r.json();
+    if(d&&d.routes&&d.routes[0]&&d.routes[0].distance>0){
+      return Math.round(d.routes[0].distance/1000);
+    }
+  }catch(e){}
+  return dayFallbackKm[i]||null;
+}
+function buildGMapsUrl(i){
+  var pts=routePts[i];
+  if(!pts||pts.length<2)return '';
+  var origin=pts[0].la+','+pts[0].lo;
+  var destination=pts[pts.length-1].la+','+pts[pts.length-1].lo;
+  var waypoints=pts.slice(1,-1).map(function(p){return p.la+','+p.lo;}).join('|');
+  var url='https://www.google.com/maps/dir/?api=1'
+    +'&origin='+encodeURIComponent(origin)
+    +'&destination='+encodeURIComponent(destination)
+    +'&travelmode=driving';
+  if(waypoints) url+='&waypoints='+encodeURIComponent(waypoints);
+  return url;
+}
+
 // ── TOGGLE ───────────────────────────────────────────────────────────────
 function tog(i){
   var w=document.getElementById('tips'+i);
@@ -784,9 +894,49 @@ function tog(i){
   var o=w.classList.contains('open');
   w.classList.toggle('open',!o);row.classList.toggle('open',!o);
   arr.textContent=o?'▾':'▴';
-  if(!o){setTimeout(function(){initMap(i);initItinMap(i);},60);loadDay(i);}
+  if(!o){
+    setTimeout(function(){initMap(i);initItinMap(i);},60);
+    loadDay(i);
+    // fetch real road distance and update stats bar
+    var kmEl=document.getElementById('km-'+i);
+    if(kmEl&&kmEl.textContent==='…'){
+      if(routeKmCache[i]!==null){
+        kmEl.textContent=routeKmCache[i];
+        var rowEl=document.getElementById('km-row-'+i);
+        if(rowEl) rowEl.textContent=routeKmCache[i]+' km';
+      } else {
+        fetchRouteDist(i).then(function(km){
+          routeKmCache[i]=km;
+          var el=document.getElementById('km-'+i);
+          if(el) el.textContent=km||'—';
+          var rowEl=document.getElementById('km-row-'+i);
+          if(rowEl) rowEl.textContent=km?km+' km':'—';
+        });
+      }
+    }
+  }
 }
+// fetch all km on page load and populate table + header total
+var routeKmCache=new Array(days.length).fill(null);
+function loadAllKm(){
+  var promises=routePts.map(function(pts,i){
+    return fetchRouteDist(i).then(function(km){
+      routeKmCache[i]=km;
+      var rowEl=document.getElementById('km-row-'+i);
+      if(rowEl) rowEl.textContent=km?km+' km':'—';
+      var inEl=document.getElementById('km-'+i);
+      if(inEl) inEl.textContent=km||'—';
+    });
+  });
+  Promise.all(promises).then(function(){
+    var total=routeKmCache.reduce(function(s,v){return s+(v||0);},0);
+    var hdr=document.getElementById('hdr-km');
+    if(hdr) hdr.textContent='🚗 Celková vzdialenosť tripu: '+total.toLocaleString('sk-SK')+' km';
+  });
+}
+
 buildRows();
+loadAllKm();
 </script>
 </body>
 </html>

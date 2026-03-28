@@ -95,25 +95,17 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 @media(max-width:600px){.pgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:380px){.pgrid{grid-template-columns:1fr}}
 @media(max-width:768px){
-  .itin-must-h,.itin-sched-h{font-size:10px!important}
-  .itin-must-item{font-size:11.5px!important}
-  .itin-row{font-size:11.5px!important}
-  .itin-time{font-size:11.5px!important}
-  .itin-rp{width:17px!important;height:17px!important;font-size:9px!important}
-  .ltr-tag{font-size:9px!important;padding:1px 3px!important}
-  .sunset-tag{font-size:9px!important}
-  .pc-name{font-size:12px!important}
-  .pc-dist,.pc-time,.pc-hours,.pc-closed{font-size:10px!important}
-  .pc-desc{font-size:11px!important}
-  .pc-link{font-size:10px!important;padding:2px 6px!important}
-  .sec-h{font-size:11px!important}
-  .book-block-h{font-size:10px!important}
-  .book-item{font-size:11px!important}
-  .book-link{font-size:10px!important}
-  .gmaps-btn{font-size:11px!important;padding:5px 10px!important}
-  .mleg{font-size:10px!important}
+  .tips-wrap, .tips-wrap *{font-size:11px!important;line-height:1.4!important}
+  .itin-time{color:#2b6cb0!important;font-weight:700!important}
+  .itin-must-h,.itin-sched-h,.book-block-h,.sec-h{font-size:10px!important;letter-spacing:.05em!important}
+  .pc-name{font-weight:700!important}
   .itin-outer{grid-template-columns:1fr!important}
   .itin-imap{min-height:200px!important}
+  .itin-row{display:grid!important;grid-template-columns:44px 22px 1fr!important}
+  .itin-rp{width:16px!important;height:16px!important}
+  .pc-ltr{font-size:11px!important;width:20px!important;height:20px!important}
+  .gmaps-btn{padding:5px 10px!important}
+  .book-item{padding:3px 0!important}
 }
 /* Easter warning */
 .easter-badge{display:inline-block;background:#c53030;color:#fff;font-size:.63rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;letter-spacing:.02em}
@@ -993,6 +985,6 @@ function loadAllKm(cb){
 buildRows();
 loadAllKm();
 </script>
-<div style="text-align:center;padding:18px 0 10px;font-size:.72rem;color:#a0aec0;letter-spacing:.06em">v1.0</div>
+<div style="text-align:center;padding:18px 0 10px;font-size:.72rem;color:#a0aec0;letter-spacing:.06em">v1.1</div>
 </body>
 </html>

@@ -103,17 +103,13 @@ th{padding:10px 12px;text-align:left;font-weight:600;font-size:.7rem;text-transf
 @media(max-width:600px){.pgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:380px){.pgrid{grid-template-columns:1fr}}
 @media(max-width:768px){
-  .tips-wrap,.tips-wrap *{font-size:11px!important;line-height:1.4!important}
-  .itin-time{color:#2b6cb0!important;font-weight:700!important}
-  .itin-must-h,.itin-sched-h,.book-block-h,.sec-h{font-size:10px!important;letter-spacing:.05em!important}
-  .pc-name{font-weight:700!important}
+  .tips-wrap{
+    zoom:0.72;
+    -webkit-text-size-adjust:none;
+    text-size-adjust:none;
+  }
   .itin-outer{grid-template-columns:1fr!important}
   .itin-imap{min-height:200px!important}
-  .itin-row{display:grid!important;grid-template-columns:44px 22px 1fr!important}
-  .itin-rp{width:16px!important;height:16px!important}
-  .pc-ltr{font-size:11px!important;width:20px!important;height:20px!important}
-  .gmaps-btn{padding:5px 10px!important}
-  .book-item{padding:3px 0!important}
 }
 </style>
 </head>
@@ -226,21 +222,15 @@ sched:[
   {city:"Saint-Paul-de-Vence",name:"Stredoveká dedinka umelcov",desc:"galérie, ateliéry a výhľad od Álp po more"}],
 mustNames:["Vieux Nice & Cours Saleya","Colline du Château – vyhliadka","Saint-Paul-de-Vence"],
 sched:[
-  ["9:00","Antibes 1 – ranná prechádzka Marché Provençal, Vieil Antibes",false,["A"]],
-  ["9:45","Antibes 1 – Odchod na Saint-Paul-de-Vence (20 min)"],
-  ["10:05","Saint-Paul-de-Vence 2 – uličky, galérie, výhľad",true,["G"]],
-  ["10:50","Saint-Paul-de-Vence 2 – Chapelle Matisse vo Vence (5 min) – otv. LEN Pi 14:00–17:30 ★",true,["H"]],
-  ["11:35","Saint-Paul-de-Vence 2 – Odchod do Grasse (30 min)"],
-  ["12:05","Grasse 3 – Fragonard, prehliadka (zadarmo, 45 min)",false,["F"]],
-  ["13:00","Grasse 3 – obed"],
-  ["14:00","Nice 4 – Cours Saleya, Vieux Nice – prechádzka farebnými uličkami",true,["C"]],
-  ["15:00","Nice 4 – Colline du Château – výťah (zadarmo), vodopád, panoráma",true,["E"]],
-  ["16:00","Nice 4 – Promenade des Anglais, Place Masséna",false,["B","D"]],
-  ["16:45","Nice 4 – Odchod do Villefranche (15 min)"],
-  ["17:00","Villefranche-sur-Mer 5 – záliv, kaplnka Cocteau",false,["I"]],
-  ["17:45","Villefranche-sur-Mer 5 – Odchod do Antibes (30 min)"],
-  ["18:15","Antibes 6 – Musée Picasso (Ut–Ne 10:00–18:00), večerná prechádzka",false,["A"]],
-  ["20:00","Antibes 6 – večera"]]},
+  ["10:30","Grasse 2 – historická fabrika Fragonard – prehliadka výroby parfémov (2h)",true,["F"]],
+  ["12:30","Grasse 2 – Odchod do Èze (45 min)"],
+  ["13:30","Èze 3 – Jardin Exotique – záhrada na útese, výhľad na Riviéru (9:00–18:30)",true,["D"]],
+  ["16:00","Èze 3 – Odchod do Nice (15 min)"],
+  ["17:00","Nice 4 – Promenade des Anglais, Place Masséna",false,["B","D"]],
+  ["18:00","Nice 4 – Vieux Nice, Cours Saleya – večerná prechádzka",true,["C"]],
+  ["19:30","Nice 4 – večera v starom meste"],
+  ["20:30","Nice 4 – Odchod do Antibes (30 min)"],
+  ["21:00","Antibes 5 – príchod na ubytovanie"]]},
 // 3 – 4.4. Sobota (Biela sobota)  routePts: Antibes(1) StTropez(2) PGrimaud(3) Cannes(4) Avignon(5)
 {must:[
   {city:"Saint-Tropez",name:"Vieux Port a Citadelle",desc:"farebný prístav, Place des Lices a výhľad na záliv"},
@@ -248,17 +238,17 @@ sched:[
   {city:"Cannes",name:"Îles de Lérins",desc:"výlet loďou na ostrov s kláštorom zo 5. stor."}],
 mustNames:["Saint-Tropez","Cannes","Îles de Lérins"],
 sched:[
-  ["9:00","Antibes 1 – Odchod do Cannes (30 min)"],
-  ["9:30","Cannes 2 – La Croisette, Palais des Festivals, Vieux-Port",true,["A"]],
-  ["10:15","Cannes 2 – loď na Île Sainte-Marguerite (~18 €, 15 min) – pevnosť, les",true,["F"]],
-  ["12:00","Cannes 2 – späť loďou do Cannes"],
-  ["12:30","Cannes 2 – obed v centre"],
-  ["13:30","Cannes 2 – Odchod do Port Grimaud (45 min)"],
-  ["14:15","Port Grimaud 3 – kanálové mestečko",false,["B"]],
-  ["14:45","Port Grimaud 3 – Odchod do Saint-Tropez (15 min)"],
-  ["15:00","Saint-Tropez 4 – Vieux Port, Place des Lices, Citadelle",true,["C"]],
-  ["16:30","Saint-Tropez 4 – Odchod do Avignonu (2h 30 min)"],
-  ["19:00","Avignon 5 – príchod, check-in"]]},
+  ["9:00","Antibes 1 – raňajky na trhu Marché Provençal"],
+  ["10:00","Antibes 1 – Musée Picasso – Château Grimaldi (So otvorené 10:00–18:00)",true],
+  ["11:30","Antibes 1 – Odchod do Cannes (30 min)"],
+  ["12:00","Cannes 2 – La Croisette, Palais des Festivals, Vieux-Port",true,["A"]],
+  ["13:00","Cannes 2 – obed v centre"],
+  ["13:45","Cannes 2 – Odchod do Port Grimaud (45 min)"],
+  ["14:30","Port Grimaud 3 – kanálové mestečko",false,["B"]],
+  ["15:00","Port Grimaud 3 – Odchod do Saint-Tropez (15 min)"],
+  ["15:15","Saint-Tropez 4 – Vieux Port, Place des Lices, Citadelle",true,["C"]],
+  ["19:30","Saint-Tropez 4 – Odchod do Avignonu (2h 30 min)"],
+  ["22:00","Avignon 5 – príchod, check-in"]]},
 // 4 – 5.4. Nedeľa (Veľkonočná nedeľa)  routePts: Avignon(1) Marseille(2) Avignon(3-loop)
 {must:[
   {city:"Marseille",name:"Notre-Dame de la Garde",desc:"bazilika na 162 m s 360° panorámou mesta, prístavu a mora"},
@@ -457,7 +447,7 @@ var days=[
  {ltr:"I",n:"Corniche d'Or",w:"Corniche d'Or",t:"n",la:43.4300,lo:6.9600,x:"1h od Antibes",tm:"1h",d:`Vyhliadková pobrežná cesta N98 cez červené porfýrové skaly Massif de l'Estérel. Červené skaly kontrastujúce s azúrovým morom tvoria obraz ako z maľby.`}
 ]},
 // 2 – 3.4. Piatok (Veľký piatok)
-{date:"3.4.",day:"Piatok",prog:"Nice, Grasse, Antibes",route:"okolie Antibes",t:"—",tn:"—",acc:"Antibes",seg:"ca",cx:[43.76,7.06],cz:10,places:[
+{date:"3.4.",day:"Piatok",prog:"Grasse, Èze, Nice, Antibes",route:"Antibes → Grasse → Èze → Nice → Antibes",t:"—",tn:"—",acc:"Antibes",seg:"ca",cx:[43.76,7.06],cz:10,places:[
  {ltr:"A",n:"Antibes – Vieil Antibes & Musée Picasso",w:"Antibes",t:"c",la:43.5803,lo:7.1241,x:"v Antibes",tm:"1h",hours:"Musée Picasso: 10:00–18:00 Ut–Ne; Po ZATVORENÉ",website:"https://www.antibes-juanlespins.com/les-musees/picasso",d:`Stredoveké opevnené mesto s trhom Marché Provençal každé ráno okrem pondelka. Château Grimaldi slúži ako Musée Picasso – Picasso tu strávil celý rok 1946.`},
  {ltr:"B",n:"Promenade des Anglais",w:"Promenade des Anglais",t:"c",la:43.6954,lo:7.2662,x:"30 min od Antibes",tm:"30 min",d:`7 km dlhá promenáda lemovaná palmami pozdĺž Azúrového mora je symbolom Nice.`},
  {ltr:"C",n:"Vieux Nice & Cours Saleya",w:"Old Nice",t:"c",la:43.6964,lo:7.2766,x:"30 min od Antibes",tm:"1h",hours:"Trh Cours Saleya: 6:00–13:00 Ut–Ne (Po antický trh)",d:`Stará Nice je labyrint úzkych uličiek s farebnými barokovými fasádami. Cours Saleya je živé námestie s každodenným kvetinovým a potravinovým trhom.`},
@@ -675,7 +665,7 @@ var dayEndpoints=[
 var routePts=[
  [{n:"Záhorská Bystrica",la:48.2284,lo:17.0258},{n:"Sirmione",la:45.4906,lo:10.6094},{n:"Verona",la:45.4393,lo:10.9940},{n:"Sirmione",la:45.4906,lo:10.6094}],
  [{n:"Sirmione",la:45.4906,lo:10.6094},{n:"Monaco",la:43.7374,lo:7.4238},{n:"Èze",la:43.7271,lo:7.3619},{n:"Antibes",la:43.5804,lo:7.1233}],
- [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Saint-Paul-de-Vence",la:43.6967,lo:7.1203},{n:"Grasse",la:43.6592,lo:6.9258},{n:"Nice",la:43.6954,lo:7.2662},{n:"Villefranche-sur-Mer",la:43.7055,lo:7.3106},{n:"Antibes",la:43.5804,lo:7.1233}],
+ [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Grasse",la:43.6592,lo:6.9258},{n:"Èze",la:43.7271,lo:7.3619},{n:"Nice",la:43.6954,lo:7.2662},{n:"Antibes",la:43.5804,lo:7.1233}],
  [{n:"Antibes",la:43.5804,lo:7.1233},{n:"Cannes",la:43.5528,lo:7.0274},{n:"Port Grimaud",la:43.2729,lo:6.5797},{n:"Saint-Tropez",la:43.2723,lo:6.6398},{n:"Avignon",la:43.9493,lo:4.8055}],
  [{n:"Avignon",la:43.9493,lo:4.8055},{n:"Marseille",la:43.2965,lo:5.3698},{n:"Calanques",la:43.2125,lo:5.4180},{n:"Avignon",la:43.9493,lo:4.8055}],
  [{n:"Avignon",la:43.9493,lo:4.8055},{n:"Pont du Gard",la:43.9474,lo:4.5355},{n:"Uzès",la:44.0126,lo:4.4198},{n:"Gordes/Sénanque",la:43.9256,lo:5.1848},{n:"Roussillon",la:43.8986,lo:5.2890},{n:"Avignon",la:43.9493,lo:4.8055}],
@@ -1012,6 +1002,6 @@ function loadAllKm(cb){
 buildRows();
 loadAllKm();
 </script>
-<div style="text-align:center;padding:18px 0 10px;font-size:.72rem;color:#a0aec0;letter-spacing:.06em">v1.3</div>
+<div style="text-align:center;padding:18px 0 10px;font-size:.72rem;color:#a0aec0;letter-spacing:.06em">v1.4</div>
 </body>
 </html>
